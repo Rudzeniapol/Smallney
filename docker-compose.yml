@@ -1,0 +1,33 @@
+# Local development: PostgreSQL + API. For a server deployment see deploy/docker-compose.yml.
+name: smallney-dev
+
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: smallney
+      POSTGRES_USER: smallney
+      POSTGRES_PASSWORD: smallney
+    ports:
+      - "${POSTGRES_PORT:-5445}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U smallney -d smallney"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build: ./backend
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=smallney;Username=smallney;Password=smallney
+    ports:
+      - "${API_PORT:-5080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:

@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Прогноз</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&amp;family=Unbounded:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#07080C}
+a{color:#B4AAFF}a:hover{color:#D4CEFF}
+.rise{animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
+.d1{animation-delay:.05s}.d2{animation-delay:.12s}.d3{animation-delay:.2s}.d4{animation-delay:.28s}.d5{animation-delay:.36s}
+.l30{stroke-dasharray:1;animation:dA 1.4s .2s cubic-bezier(.6,0,.2,1) both}
+.l91{stroke-dasharray:1;animation:dB 1.4s .2s cubic-bezier(.6,0,.2,1) both}
+.l182{stroke-dasharray:1;animation:dC 1.4s .2s cubic-bezier(.6,0,.2,1) both}
+.l365{stroke-dasharray:1;animation:dD 1.4s .2s cubic-bezier(.6,0,.2,1) both}
+.a30{animation:fA 1s .7s both}.a91{animation:fB 1s .7s both}.a182{animation:fC 1s .7s both}.a365{animation:fD 1s .7s both}
+.ping{transform-origin:center;transform-box:fill-box;animation:ping 2s ease-out infinite}
+.knob{transition:transform .25s cubic-bezier(.3,1.4,.5,1)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+@keyframes dA{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes dB{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes dC{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes dD{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes fA{from{opacity:0}}@keyframes fB{from{opacity:0}}@keyframes fC{from{opacity:0}}@keyframes fD{from{opacity:0}}
+@keyframes ping{0%{transform:scale(1);opacity:.8}100%{transform:scale(3.4);opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 1100px; position: relative; overflow: hidden; box-sizing: border-box; background: radial-gradient(110% 40% at 50% 0%, rgba(106,90,249,.3) 0%, rgba(106,90,249,0) 70%), #0B0D12; font-family: Onest, 'Segoe UI', Roboto, system-ui, sans-serif; color: #EEF1F6; font-variant-numeric: tabular-nums">
+  <div style="padding: 48px 20px 40px; display: flex; flex-direction: column; gap: 18px">
+
+    <header class="rise" style="display: flex; align-items: center; gap: 12px">
+      <a href="Main.dc.html" aria-label="Назад" style="width: 44px; height: 44px; border-radius: 14px; background: #141821; border: 1px solid #232938; display: grid; place-items: center; color: #EEF1F6; flex: none">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"></path></svg>
+      </a>
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+        <h1 style="margin: 0; font-family: Unbounded, system-ui, sans-serif; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">Прогноз</h1>
+        <span style="font-size: 12px; color: #98A1B3">обновлено 12 мин назад · считается на сервере</span>
+      </div>
+    </header>
+
+    <div class="rise d1" role="tablist" aria-label="Горизонт прогноза" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 16px; background: #141821; border: 1px solid #232938">
+      <sc-for list="{{hz}}" as="h" hint-placeholder-count="4">
+        <button role="tab" aria-selected="{{h.sel}}" onClick="{{h.pick}}" style="min-height: 40px; border: 0; border-radius: 12px; background: {{h.bg}}; color: {{h.fg}}; font: 600 14px Onest, system-ui, sans-serif; cursor: pointer; transition: background .25s ease">{{h.label}}</button>
+      </sc-for>
+    </div>
+
+    <section class="rise d2" aria-label="График прогноза" style="border-radius: 26px; padding: 18px 16px 14px; background: linear-gradient(180deg, #161A24, #11141B); border: 1px solid #232938; display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 4px; padding: 0 2px">
+        <span style="font-size: 13px; color: #98A1B3">{{endLabel}}</span>
+        <div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap">
+          <span style="font-family: Unbounded, system-ui, sans-serif; font-size: 28px; font-weight: 600; letter-spacing: -0.02em">{{endValue}}</span>
+          <span style="font-size: 14px; font-weight: 600; color: {{deltaColor}}">{{delta}}</span>
+        </div>
+      </div>
+      <svg role="img" aria-label="{{chartAria}}" width="358" height="190" viewBox="0 0 358 190" style="display: block; width: 100%; height: auto">
+        <defs>
+          <linearGradient id="fa2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#85BB65" stop-opacity=".34"></stop><stop offset="1" stop-color="#85BB65" stop-opacity="0"></stop></linearGradient>
+          <linearGradient id="fl2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9C90FF"></stop><stop offset="1" stop-color="#85BB65"></stop></linearGradient>
+        </defs>
+        <line x1="0" y1="47" x2="358" y2="47" stroke="#232938"></line>
+        <line x1="0" y1="95" x2="358" y2="95" stroke="#232938"></line>
+        <line x1="0" y1="143" x2="358" y2="143" stroke="#232938"></line>
+        <path class="{{areaCls}}" d="{{area}}" fill="url(#fa2)"></path>
+        <path class="{{lineCls}}" pathLength="1" d="{{line}}" fill="none" stroke="url(#fl2)" stroke-width="2.6" stroke-linejoin="round"></path>
+        <sc-if value="{{whatif}}" hint-placeholder-val="{{ true }}">
+          <path d="{{scen}}" fill="none" stroke="#FF8A5B" stroke-width="2" stroke-dasharray="5 4" stroke-linejoin="round"></path>
+          <circle class="ping" cx="{{ax}}" cy="{{ay}}" r="5" fill="#FF6B7F"></circle>
+          <circle cx="{{ax}}" cy="{{ay}}" r="5" fill="#FF6B7F" stroke="#11141B" stroke-width="2"></circle>
+        </sc-if>
+      </svg>
+      <div style="display: flex; justify-content: space-between; font-size: 12px; color: #98A1B3; padding: 0 2px">
+        <span>Сегодня</span><span>{{midDate}}</span><span>{{endDate}}</span>
+      </div>
+      <div style="display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: #98A1B3; padding: 0 2px">
+        <span style="display: flex; align-items: center; gap: 6px"><span style="width: 16px; height: 3px; border-radius: 2px; background: linear-gradient(90deg, #9C90FF, #85BB65)"></span>Все счета, BYN</span>
+        <sc-if value="{{whatif}}" hint-placeholder-val="{{ true }}">
+          <span style="display: flex; align-items: center; gap: 6px"><span style="width: 16px; height: 0; border-top: 2px dashed #FF8A5B"></span>Сценарий «что если»</span>
+        </sc-if>
+      </div>
+    </section>
+
+    <section class="rise d3" aria-labelledby="al-h" style="display: flex; flex-direction: column; gap: 10px">
+      <h2 id="al-h" style="margin: 0; font-size: 18px; font-weight: 600">Тревожные точки</h2>
+      <sc-if value="{{alertOn}}" hint-placeholder-val="{{ true }}">
+        <div style="padding: 14px 16px; border-radius: 18px; background: rgba(255,107,127,.1); border: 1px solid rgba(255,107,127,.35); display: flex; gap: 12px; align-items: flex-start">
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF8E9D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M12 3 2 20h20z"></path><path d="M12 10v4M12 17h.01"></path></svg>
+          <div style="display: flex; flex-direction: column; gap: 3px">
+            <span style="font-size: 15px; font-weight: 600">{{alertTitle}}</span>
+            <span style="font-size: 13px; color: #C7CDD8">{{alertSub}}</span>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{calm}}" hint-placeholder-val="{{ false }}">
+        <div style="padding: 14px 16px; border-radius: 18px; background: rgba(133,187,101,.08); border: 1px solid rgba(133,187,101,.28); display: flex; gap: 12px; align-items: center">
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A8D98A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="m5 12 5 5 9-10"></path></svg>
+          <span style="font-size: 14px">Все счета выше порога 1 000 Br. Минимум на карте — {{cardMin}}</span>
+        </div>
+      </sc-if>
+    </section>
+
+    <section class="rise d4" aria-labelledby="wi-h" style="border-radius: 22px; padding: 16px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column; gap: 12px">
+      <h2 id="wi-h" style="margin: 0; font-size: 18px; font-weight: 600">Что если</h2>
+      <div style="display: flex; align-items: center; gap: 12px">
+        <span style="width: 40px; height: 40px; border-radius: 13px; flex: none; display: grid; place-items: center; background: rgba(255,138,91,.16); color: #FFA37E">
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="11" rx="1.5"></rect><path d="M2 19h20"></path></svg>
+        </span>
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+          <span style="font-size: 15px; font-weight: 500">Покупка ноутбука</span>
+          <span style="font-size: 12px; color: #98A1B3">15 янв · Зарплатная карта · −3 200 Br</span>
+        </div>
+        <button role="switch" aria-checked="{{wiAria}}" aria-label="Учитывать в прогнозе" onClick="{{toggle}}" style="width: 52px; height: 32px; flex: none; border: 0; border-radius: 99px; padding: 3px; background: {{swBg}}; cursor: pointer; display: flex; transition: background .25s ease">
+          <span class="knob" style="width: 26px; height: 26px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 2px 6px rgba(0,0,0,.3); transform: {{knobTx}}"></span>
+        </button>
+      </div>
+      <button style="min-height: 44px; border-radius: 14px; border: 1px dashed #343B4E; background: transparent; color: #D4CEFF; font: 500 14px Onest, system-ui, sans-serif; cursor: pointer">Добавить разовую операцию</button>
+    </section>
+
+    <section class="rise d5" aria-labelledby="gf-h" style="display: flex; flex-direction: column; gap: 10px">
+      <h2 id="gf-h" style="margin: 0; font-size: 18px; font-weight: 600">Цели к сроку</h2>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+        <div style="padding: 14px; border-radius: 18px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column; gap: 6px">
+          <span style="font-size: 14px; font-weight: 500">Отпуск · июль</span>
+          <span style="font-size: 14px; font-weight: 600; color: #A8D98A">Успеваете</span>
+          <span style="font-size: 12px; color: #98A1B3">с запасом 2 недели</span>
+        </div>
+        <div style="padding: 14px; border-radius: 18px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column; gap: 6px">
+          <span style="font-size: 14px; font-weight: 500">Ноутбук · март</span>
+          <span style="font-size: 14px; font-weight: 600; color: #FF8E9D">Не хватит 460 Br</span>
+          <span style="font-size: 12px; color: #98A1B3">+115 Br в месяц решат</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1100}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { h: 91, whatif: true };
+  }
+  sim(days, whatif) {
+    const start = new Date(2026, 9, 22);
+    let card = 4215.4, other = 12480.35 - 4215.4;
+    const out = [];
+    for (let i = 0; i <= days; i++) {
+      const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+      const dm = d.getDate();
+      if (i > 0) {
+        card -= 45;
+        if (dm === 20) { card += 2000; other += 400; }
+        if (dm === 10) card += 500;
+        if (dm === 25) card -= 850;
+        if (dm === 1) card -= 150;
+        if (dm === 27) card -= 33;
+        const nx = new Date(d.getFullYear(), d.getMonth(), dm + 1);
+        if (nx.getDate() === 1) other += 16;
+        if (whatif && d.getFullYear() === 2027 && d.getMonth() === 0 && dm === 15) card -= 3200;
+      }
+      out.push({ d, card, total: card + other });
+    }
+    return out;
+  }
+  renderVals() {
+    const s = this.state;
+    const M = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+    const dl = (d) => d.getDate() + ' ' + M[d.getMonth()];
+    const fmt = (n) => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' Br';
+    const base = this.sim(s.h, false);
+    const sc = this.sim(s.h, true);
+    const vals = base.map((p) => p.total).concat(s.whatif ? sc.map((p) => p.total) : []);
+    let lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+    const pad = (hi - lo) * 0.12 || 100; lo -= pad; hi += pad;
+    const W = 358, H = 190;
+    const X = (i) => (i / s.h * W).toFixed(1);
+    const Y = (v) => (H - (v - lo) / (hi - lo) * H).toFixed(1);
+    const pts = (arr) => arr.map((p, i) => (i ? 'L' : 'M') + X(i) + ',' + Y(p.total)).join(' ');
+    const line = pts(base);
+    const area = line + ' L' + W + ',' + H + ' L0,' + H + ' Z';
+    const scen = pts(sc);
+    const negIdx = sc.findIndex((p) => p.card < 0);
+    const minCardSc = sc.reduce((m, p) => (p.card < m.card ? p : m), sc[0]);
+    const minCardBase = base.reduce((m, p) => (p.card < m.card ? p : m), base[0]);
+    const ai = negIdx >= 0 ? negIdx : sc.indexOf(minCardSc);
+    const last = s.whatif ? sc[sc.length - 1] : base[base.length - 1];
+    const diff = last.total - base[0].total;
+    const hasAlert = s.whatif && negIdx >= 0;
+    const names = { 30: '1 мес', 91: '3 мес', 182: '6 мес', 365: '12 мес' };
+    const endNames = { 30: 'Через месяц', 91: 'Через 3 месяца', 182: 'Через полгода', 365: 'Через год' };
+    const hz = [30, 91, 182, 365].map((h) => ({
+      label: names[h], sel: s.h === h ? 'true' : 'false',
+      bg: s.h === h ? '#6A5AF9' : 'transparent', fg: s.h === h ? '#FFFFFF' : '#98A1B3',
+      pick: () => this.setState({ h })
+    }));
+    return {
+      hz, line, area, scen,
+      lineCls: 'l' + s.h, areaCls: 'a' + s.h,
+      whatif: s.whatif,
+      alertOn: hasAlert,
+      calm: !hasAlert,
+      ax: X(ai), ay: Y(sc[ai].total),
+      endLabel: endNames[s.h] + (s.whatif ? ' · с учётом сценария' : ''),
+      endValue: '≈ ' + fmt(last.total),
+      delta: (diff >= 0 ? '+' : '−') + fmt(Math.abs(diff)),
+      deltaColor: diff >= 0 ? '#A8D98A' : '#FF8E9D',
+      midDate: dl(base[Math.round(s.h / 2)].d), endDate: dl(base[s.h].d),
+      chartAria: 'Прогноз общего баланса до ' + dl(base[s.h].d) + ': ' + fmt(last.total),
+      alertTitle: negIdx >= 0 ? 'Карта уйдёт в минус ' + dl(sc[negIdx].d) : 'Карта ниже порога',
+      alertSub: 'Минимум ' + fmt(minCardSc.card).replace(/^-/, '−') + ' ' + dl(minCardSc.d) + '. Перенесите покупку или пополните карту с депозита.',
+      cardMin: fmt(minCardBase.card) + ', ' + dl(minCardBase.d),
+      wiAria: s.whatif ? 'true' : 'false',
+      swBg: s.whatif ? '#FF8A5B' : '#343B4E',
+      knobTx: s.whatif ? 'translateX(20px)' : 'translateX(0)',
+      toggle: () => this.setState({ whatif: !s.whatif })
+    };
+  }
+}
+</script>
+</body>
+</html>

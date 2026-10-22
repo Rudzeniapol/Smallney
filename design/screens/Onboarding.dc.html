@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Онбординг</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&amp;family=Unbounded:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#07080C}
+a{color:#B4AAFF}a:hover{color:#D4CEFF}
+.rise{animation:rise .55s cubic-bezier(.2,.8,.2,1) both}
+.d1{animation-delay:.06s}.d2{animation-delay:.14s}.d3{animation-delay:.22s}
+.f1{animation:float1 6s ease-in-out infinite}
+.f2{animation:float2 7s ease-in-out infinite}
+.f3{animation:float3 5s ease-in-out infinite}
+.sheen{position:absolute;top:-30%;bottom:-30%;left:0;width:40%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);animation:sheen 5s 1s ease-in-out infinite}
+.field:focus{border-color:#6A5AF9!important;box-shadow:0 0 0 3px rgba(106,90,249,.3)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+@keyframes float1{0%,100%{transform:translate(-50%,0) rotate(-14deg)}50%{transform:translate(-50%,-10px) rotate(-11deg)}}
+@keyframes float2{0%,100%{transform:translate(-50%,0) rotate(7deg)}50%{transform:translate(-50%,-14px) rotate(9deg)}}
+@keyframes float3{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-12px) rotate(20deg)}}
+@keyframes sheen{0%{transform:translateX(-140%) skewX(-18deg)}60%,100%{transform:translateX(320%) skewX(-18deg)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column; background: radial-gradient(90% 45% at 50% 8%, rgba(106,90,249,.4) 0%, rgba(106,90,249,0) 70%), radial-gradient(70% 30% at 85% 30%, rgba(133,187,101,.22) 0%, rgba(133,187,101,0) 70%), #0B0D12; font-family: Onest, 'Segoe UI', Roboto, system-ui, sans-serif; color: #EEF1F6">
+
+  <div aria-hidden="true" style="position: relative; height: 250px; flex: none">
+    <div class="f1" style="position: absolute; left: 50%; top: 70px; width: 230px; height: 128px; border-radius: 22px; transform: translate(-50%, 0) rotate(-14deg); background: repeating-radial-gradient(circle at 100% 0%, rgba(255,255,255,.08) 0 1px, rgba(255,255,255,0) 1px 8px), linear-gradient(140deg, #6A5AF9, #2D2190); box-shadow: 0 30px 60px -20px rgba(106,90,249,.7)"></div>
+    <div class="f2" style="position: absolute; left: 50%; top: 92px; width: 230px; height: 128px; overflow: hidden; border-radius: 22px; transform: translate(-50%, 0) rotate(7deg); background: repeating-radial-gradient(circle at 0% 100%, rgba(255,255,255,.1) 0 1px, rgba(255,255,255,0) 1px 9px), linear-gradient(140deg, #A6D987, #85BB65 45%, #3E7A2A); box-shadow: 0 30px 60px -20px rgba(133,187,101,.6); display: flex; flex-direction: column; justify-content: space-between; padding: 16px 18px; box-sizing: border-box">
+      <span class="sheen"></span>
+      <span style="font-family: Unbounded, system-ui, sans-serif; font-weight: 700; font-size: 13px; color: rgba(11,13,18,.7)">BYN · USD · EUR</span>
+      <span style="font-family: Unbounded, system-ui, sans-serif; font-weight: 700; font-size: 26px; color: #0B0D12">12 480 Br</span>
+    </div>
+    <div class="f3" style="position: absolute; right: 54px; top: 46px; width: 54px; height: 54px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #FFE7A3, #F2C14E 55%, #B9852A); box-shadow: 0 14px 30px -10px rgba(242,193,78,.8)"></div>
+  </div>
+
+  <div style="flex: 1; padding: 0 24px 28px; display: flex; flex-direction: column; gap: 20px">
+    <div role="progressbar" aria-label="Шаг {{stepNum}} из 3" aria-valuemin="1" aria-valuemax="3" aria-valuenow="{{stepNum}}" style="display: flex; gap: 6px">
+      <sc-for list="{{dots}}" as="d" hint-placeholder-count="3">
+        <span style="height: 6px; border-radius: 99px; width: {{d.w}}; background: {{d.bg}}; transition: all .35s ease"></span>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{s1}}" hint-placeholder-val="{{ true }}">
+      <div style="display: flex; flex-direction: column; gap: 16px">
+        <div class="rise" style="display: flex; flex-direction: column; gap: 8px">
+          <h1 style="margin: 0; font-family: Unbounded, system-ui, sans-serif; font-size: 26px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em">Деньги под контролем — даже без сети</h1>
+          <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #98A1B3">Счета, бюджет и прогноз в одном месте. Всё работает офлайн и синхронизируется само.</p>
+        </div>
+        <div class="rise d1" style="display: flex; flex-direction: column; gap: 6px">
+          <label for="em" style="font-size: 13px; color: #98A1B3">Email</label>
+          <input class="field" id="em" type="email" placeholder="you@example.com" style="height: 50px; padding: 0 16px; border-radius: 16px; border: 1px solid #262C3B; background: #141821; color: #EEF1F6; font: 400 16px Onest, system-ui, sans-serif; outline: none">
+        </div>
+        <div class="rise d2" style="display: flex; flex-direction: column; gap: 6px">
+          <label for="pw" style="font-size: 13px; color: #98A1B3">Пароль</label>
+          <input class="field" id="pw" type="password" placeholder="Не меньше 8 символов" style="height: 50px; padding: 0 16px; border-radius: 16px; border: 1px solid #262C3B; background: #141821; color: #EEF1F6; font: 400 16px Onest, system-ui, sans-serif; outline: none">
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{s2}}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 20px">
+        <div class="rise" style="display: flex; flex-direction: column; gap: 8px">
+          <h1 style="margin: 0; font-family: Unbounded, system-ui, sans-serif; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">Настроим под вас</h1>
+          <p style="margin: 0; font-size: 15px; color: #98A1B3">Итоги и бюджет считаются в базовой валюте.</p>
+        </div>
+        <div class="rise d1" role="radiogroup" aria-label="Базовая валюта" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+          <sc-for list="{{curs}}" as="c" hint-placeholder-count="4">
+            <button role="radio" aria-checked="{{c.sel}}" onClick="{{c.pick}}" style="min-height: 64px; border-radius: 16px; border: 1px solid {{c.border}}; background: {{c.bg}}; color: {{c.fg}}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; transition: all .2s ease">
+              <span style="font: 700 18px Unbounded, system-ui, sans-serif">{{c.sym}}</span>
+              <span style="font: 500 12px Onest, system-ui, sans-serif">{{c.code}}</span>
+            </button>
+          </sc-for>
+        </div>
+        <div class="rise d2" style="display: flex; flex-direction: column; gap: 10px">
+          <span style="font-size: 15px; font-weight: 600">Финансовый месяц начинается</span>
+          <div role="radiogroup" aria-label="День начала месяца" style="display: flex; gap: 6px; overflow-x: auto; margin: 0 -24px; padding: 2px 24px 6px">
+            <sc-for list="{{days}}" as="d" hint-placeholder-count="10">
+              <button role="radio" aria-checked="{{d.sel}}" onClick="{{d.pick}}" style="flex: none; width: 46px; height: 52px; border-radius: 14px; border: 1px solid {{d.border}}; background: {{d.bg}}; color: {{d.fg}}; font: 600 16px Onest, system-ui, sans-serif; cursor: pointer; transition: all .2s ease">{{d.n}}</button>
+            </sc-for>
+          </div>
+          <span style="font-size: 13px; color: #98A1B3">{{dayHint}}</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{s3}}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 16px">
+        <div class="rise" style="display: flex; flex-direction: column; gap: 8px">
+          <h1 style="margin: 0; font-family: Unbounded, system-ui, sans-serif; font-size: 24px; font-weight: 600; letter-spacing: -0.02em">Первый счёт</h1>
+          <p style="margin: 0; font-size: 15px; color: #98A1B3">Остальные можно добавить позже.</p>
+        </div>
+        <div class="rise d1" role="radiogroup" aria-label="Тип счёта" style="display: flex; gap: 8px; flex-wrap: wrap">
+          <sc-for list="{{accTypes}}" as="a" hint-placeholder-count="3">
+            <button role="radio" aria-checked="{{a.sel}}" onClick="{{a.pick}}" style="min-height: 44px; padding: 0 16px; border-radius: 14px; border: 1px solid {{a.border}}; background: {{a.bg}}; color: {{a.fg}}; font: 500 14px Onest, system-ui, sans-serif; cursor: pointer">{{a.label}}</button>
+          </sc-for>
+        </div>
+        <div class="rise d2" style="display: flex; flex-direction: column; gap: 6px">
+          <label for="an" style="font-size: 13px; color: #98A1B3">Название</label>
+          <input class="field" id="an" type="text" value="Зарплатная карта" style="height: 50px; padding: 0 16px; border-radius: 16px; border: 1px solid #262C3B; background: #141821; color: #EEF1F6; font: 400 16px Onest, system-ui, sans-serif; outline: none">
+        </div>
+        <div class="rise d3" style="display: flex; flex-direction: column; gap: 6px">
+          <label for="ab" style="font-size: 13px; color: #98A1B3">Текущий остаток, {{curCode}}</label>
+          <input class="field" id="ab" type="text" inputmode="decimal" placeholder="0,00" style="height: 50px; padding: 0 16px; border-radius: 16px; border: 1px solid #262C3B; background: #141821; color: #EEF1F6; font: 600 18px Onest, system-ui, sans-serif; outline: none; font-variant-numeric: tabular-nums">
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="margin-top: auto; display: flex; flex-direction: column; gap: 10px">
+      <sc-if value="{{notLast}}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{next}}" style="min-height: 56px; border: 0; border-radius: 18px; background: linear-gradient(135deg, #8A7CFF, #6A5AF9 50%, #4636D8); color: #FFFFFF; font: 700 16px Onest, system-ui, sans-serif; cursor: pointer; box-shadow: 0 18px 36px -16px rgba(106,90,249,.9)">{{cta}}</button>
+      </sc-if>
+      <sc-if value="{{last}}" hint-placeholder-val="{{ false }}">
+        <a href="Main.dc.html" style="min-height: 56px; border-radius: 18px; background: linear-gradient(135deg, #A6D987, #85BB65 50%, #4E9A3A); color: #0B0D12; font: 700 16px Onest, system-ui, sans-serif; text-decoration: none; display: grid; place-items: center; box-shadow: 0 18px 36px -16px rgba(133,187,101,.9)">Готово, к счетам</a>
+      </sc-if>
+      <sc-if value="{{s1}}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{next}}" style="min-height: 44px; border: 0; background: transparent; color: #B4AAFF; font: 500 15px Onest, system-ui, sans-serif; cursor: pointer">У меня уже есть аккаунт</button>
+      </sc-if>
+      <sc-if value="{{notFirst}}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{back}}" style="min-height: 44px; border: 0; background: transparent; color: #98A1B3; font: 500 15px Onest, system-ui, sans-serif; cursor: pointer">Назад</button>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { step: 1, cur: 'BYN', day: 5, acc: 'card' };
+  }
+  renderVals() {
+    const s = this.state;
+    const chip = (on) => ({
+      bg: on ? 'rgba(106,90,249,.22)' : '#141821',
+      border: on ? '#8A7CFF' : '#262C3B',
+      fg: on ? '#FFFFFF' : '#98A1B3'
+    });
+    const curs = [['BYN', 'Br'], ['USD', '$'], ['EUR', '€'], ['RUB', '₽']].map(([code, sym]) => Object.assign({
+      code, sym, sel: s.cur === code ? 'true' : 'false', pick: () => this.setState({ cur: code })
+    }, chip(s.cur === code)));
+    const days = Array.from({ length: 28 }, (_, i) => i + 1).map((n) => Object.assign({
+      n, sel: s.day === n ? 'true' : 'false', pick: () => this.setState({ day: n })
+    }, s.day === n ? { bg: '#85BB65', border: '#85BB65', fg: '#0B0D12' } : { bg: '#141821', border: '#262C3B', fg: '#98A1B3' }));
+    const accTypes = [['card', 'Дебетовая карта'], ['cash', 'Наличные'], ['save', 'Накопительный'], ['credit', 'Кредитная карта']].map(([id, label]) => Object.assign({
+      label, sel: s.acc === id ? 'true' : 'false', pick: () => this.setState({ acc: id })
+    }, chip(s.acc === id)));
+    const dots = [1, 2, 3].map((n) => ({
+      w: n === s.step ? '32px' : '12px',
+      bg: n < s.step ? '#85BB65' : n === s.step ? '#8A7CFF' : '#262C3B'
+    }));
+    return {
+      stepNum: s.step,
+      s1: s.step === 1, s2: s.step === 2, s3: s.step === 3,
+      notLast: s.step < 3, last: s.step === 3, notFirst: s.step > 1,
+      cta: s.step === 1 ? 'Создать аккаунт' : 'Дальше',
+      curs, days, accTypes, dots,
+      curCode: s.cur,
+      dayHint: s.day === 1 ? 'Обычный календарный месяц' : 'Месяц будет считаться с ' + s.day + '-го по ' + (s.day - 1) + '-е — удобно привязать к дню зарплаты',
+      next: () => this.setState({ step: Math.min(3, s.step + 1) }),
+      back: () => this.setState({ step: Math.max(1, s.step - 1) })
+    };
+  }
+}
+</script>
+</body>
+</html>

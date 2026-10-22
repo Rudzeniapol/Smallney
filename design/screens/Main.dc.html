@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Главная</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&amp;family=Unbounded:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#07080C}
+a{color:#B4AAFF}a:hover{color:#D4CEFF}
+.rise{animation:rise .7s cubic-bezier(.2,.8,.2,1) both}
+.d1{animation-delay:.05s}.d2{animation-delay:.12s}.d3{animation-delay:.2s}.d4{animation-delay:.28s}.d5{animation-delay:.36s}.d6{animation-delay:.44s}
+.sheen{position:absolute;top:-30%;bottom:-30%;left:0;width:40%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent);animation:sheen 7s 1.2s ease-in-out infinite;pointer-events:none}
+.draw{stroke-dasharray:1;animation:draw 1.8s .5s cubic-bezier(.6,0,.2,1) both}
+.fade{animation:fade 1.2s .9s both}
+.grow{transform-origin:left center;animation:grow 1.1s .5s cubic-bezier(.2,.8,.2,1) both}
+.ping{transform-origin:center;transform-box:fill-box;animation:ping 2.2s ease-out infinite}
+.tap{transition:transform .15s ease,filter .2s ease}.tap:active{transform:scale(.96)}.tap:hover{filter:brightness(1.08)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+@keyframes sheen{0%{transform:translateX(-140%) skewX(-18deg)}55%,100%{transform:translateX(320%) skewX(-18deg)}}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes fade{from{opacity:0}}
+@keyframes grow{from{transform:scaleX(0)}}
+@keyframes ping{0%{transform:scale(1);opacity:.7}100%{transform:scale(3.2);opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 1260px; position: relative; overflow: hidden; box-sizing: border-box; background: radial-gradient(120% 50% at 100% 0%, rgba(106,90,249,.28) 0%, rgba(106,90,249,0) 60%), radial-gradient(80% 35% at 0% 18%, rgba(133,187,101,.14) 0%, rgba(133,187,101,0) 70%), #0B0D12; font-family: Onest, 'Segoe UI', Roboto, system-ui, sans-serif; color: #EEF1F6; font-variant-numeric: tabular-nums">
+
+  <div style="padding: 20px 20px 120px; display: flex; flex-direction: column; gap: 22px">
+
+    <header class="rise" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 28px">
+      <div style="display: flex; align-items: center; gap: 12px">
+        <div aria-hidden="true" style="width: 44px; height: 44px; border-radius: 15px; background: linear-gradient(135deg, #85BB65, #3E8E5A); display: grid; place-items: center; font-family: Unbounded, system-ui, sans-serif; font-weight: 700; font-size: 16px; color: #0B0D12">Д</div>
+        <div style="display: flex; flex-direction: column; gap: 2px">
+          <span style="font-size: 13px; color: #98A1B3">Финансовый месяц</span>
+          <span style="font-size: 16px; font-weight: 600">5 окт — 4 ноя</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px">
+        <a href="Recurring.dc.html" aria-label="Запланированные платежи" class="tap" style="width: 44px; height: 44px; border-radius: 14px; background: #141821; border: 1px solid #232938; display: grid; place-items: center; color: #EEF1F6; position: relative">
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+          <span style="position: absolute; top: 10px; right: 11px; width: 8px; height: 8px; border-radius: 50%; background: #F2C14E; box-shadow: 0 0 0 2px #141821"></span>
+        </a>
+        <a href="Settings.dc.html" aria-label="Настройки" class="tap" style="width: 44px; height: 44px; border-radius: 14px; background: #141821; border: 1px solid #232938; display: grid; place-items: center; color: #EEF1F6">
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"></path><circle cx="16" cy="6" r="2"></circle><circle cx="10" cy="12" r="2"></circle><circle cx="18" cy="18" r="2"></circle></svg>
+        </a>
+      </div>
+    </header>
+
+    <section class="rise d1" aria-label="Общий капитал" style="position: relative; overflow: hidden; border-radius: 28px; padding: 22px 22px 20px; background: repeating-radial-gradient(circle at 115% -20%, rgba(255,255,255,.07) 0 1px, rgba(255,255,255,0) 1px 9px), repeating-radial-gradient(circle at -20% 130%, rgba(133,187,101,.12) 0 1px, rgba(133,187,101,0) 1px 11px), linear-gradient(140deg, #6A5AF9 0%, #4636D8 48%, #24195F 100%); box-shadow: 0 24px 60px -24px rgba(106,90,249,.75), inset 0 1px 0 rgba(255,255,255,.2); display: flex; flex-direction: column; gap: 14px">
+      <span class="sheen" aria-hidden="true"></span>
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <span style="font-size: 14px; color: rgba(255,255,255,.82)">Общий капитал</span>
+        <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255,255,255,.82)">
+          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"></path><path d="M4 3v5h5"></path><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"></path><path d="M20 21v-5h-5"></path></svg>
+          2 мин назад
+        </span>
+      </div>
+      <div style="display: flex; align-items: baseline; gap: 6px; font-family: Unbounded, system-ui, sans-serif; color: #FFFFFF">
+        <span style="font-size: 36px; font-weight: 600; letter-spacing: -0.02em">12 480</span>
+        <span style="font-size: 20px; font-weight: 500; color: rgba(255,255,255,.75)">,35 Br</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+        <span style="display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; border-radius: 999px; background: rgba(133,187,101,.22); color: #C9F0B0; font-size: 13px; font-weight: 600">
+          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"></path></svg>
+          +1 240,00 Br за месяц
+        </span>
+        <span style="font-size: 13px; color: rgba(255,255,255,.75)">≈ 3 820 $</span>
+      </div>
+    </section>
+
+    <nav class="rise d2" aria-label="Разделы" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+      <a href="Goals.dc.html" class="tap" style="min-height: 48px; border-radius: 16px; background: #141821; border: 1px solid #232938; display: flex; align-items: center; justify-content: center; gap: 8px; color: #EEF1F6; text-decoration: none; font-size: 14px; font-weight: 500">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F2C14E" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="4"></circle><circle cx="12" cy="12" r=".6"></circle></svg>
+        Цели
+      </a>
+      <a href="Forecast.dc.html" class="tap" style="min-height: 48px; border-radius: 16px; background: #141821; border: 1px solid #232938; display: flex; align-items: center; justify-content: center; gap: 8px; color: #EEF1F6; text-decoration: none; font-size: 14px; font-weight: 500">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9C90FF" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"></path><path d="M14 7h7v7"></path></svg>
+        Прогноз
+      </a>
+      <a href="Recurring.dc.html" class="tap" style="min-height: 48px; border-radius: 16px; background: #141821; border: 1px solid #232938; display: flex; align-items: center; justify-content: center; gap: 8px; color: #EEF1F6; text-decoration: none; font-size: 14px; font-weight: 500">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#85BB65" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l4 4-4 4"></path><path d="M3 11V9a3 3 0 0 1 3-3h15"></path><path d="M7 22l-4-4 4-4"></path><path d="M21 13v2a3 3 0 0 1-3 3H3"></path></svg>
+        Платежи
+      </a>
+    </nav>
+
+    <section class="rise d3" aria-labelledby="acc-h" style="display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline">
+        <h2 id="acc-h" style="margin: 0; font-size: 18px; font-weight: 600">Счета</h2>
+        <a href="Settings.dc.html" style="font-size: 14px; text-decoration: none">Все 6</a>
+      </div>
+      <div style="display: flex; gap: 10px; overflow-x: auto; margin: 0 -20px; padding: 0 20px 4px">
+        <div style="flex: 0 0 148px; border-radius: 20px; padding: 14px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column; gap: 14px">
+          <div style="width: 36px; height: 36px; border-radius: 12px; background: rgba(106,90,249,.2); color: #B4AAFF; display: grid; place-items: center">
+            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="M3 10h18"></path></svg>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 3px">
+            <span style="font-size: 13px; color: #98A1B3">Зарплатная карта</span>
+            <span style="font-size: 17px; font-weight: 600">4 215,40 Br</span>
+          </div>
+        </div>
+        <div style="flex: 0 0 148px; border-radius: 20px; padding: 14px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column; gap: 14px">
+          <div style="width: 36px; height: 36px; border-radius: 12px; background: rgba(133,187,101,.18); color: #A8D98A; display: grid; place-items: center">
+            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 10h16M6 10v8M10 10v8M14 10v8M18 10v8M3 20h18M12 3l9 5H3z"></path></svg>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 3px">
+            <span style="font-size: 13px; color: #98A1B3">Депозит · 9,5%</span>
+            <span style="font-size: 17px; font-weight: 600">2 100,00 $</span>
+          </div>
+        </div>
+        <div style="flex: 0 0 148px; border-radius: 20px; padding: 14px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column; gap: 14px">
+          <div style="width: 36px; height: 36px; border-radius: 12px; background: rgba(255,138,91,.18); color: #FFA37E; display: grid; place-items: center">
+            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="M3 10h18M7 15h4"></path></svg>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 3px">
+            <span style="font-size: 13px; color: #98A1B3">Кредитка · лимит 3 000</span>
+            <span style="font-size: 17px; font-weight: 600; color: #FFA37E">−640,20 Br</span>
+          </div>
+        </div>
+        <div style="flex: 0 0 148px; border-radius: 20px; padding: 14px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column; gap: 14px">
+          <div style="width: 36px; height: 36px; border-radius: 12px; background: rgba(92,200,255,.16); color: #8ED8FF; display: grid; place-items: center">
+            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="6" width="18" height="12" rx="2"></rect><circle cx="12" cy="12" r="2.5"></circle></svg>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 3px">
+            <span style="font-size: 13px; color: #98A1B3">Наличные</span>
+            <span style="font-size: 17px; font-weight: 600">380,00 Br</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="rise d4" aria-labelledby="bud-h" style="border-radius: 24px; padding: 18px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline">
+        <h2 id="bud-h" style="margin: 0; font-size: 18px; font-weight: 600">Бюджет месяца</h2>
+        <a href="Budget.dc.html" style="font-size: 14px; text-decoration: none">Подробнее</a>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; justify-content: space-between; font-size: 14px"><span>Кафе и рестораны</span><span style="color: #F2C14E; font-weight: 600">92%</span></div>
+          <div style="height: 8px; border-radius: 99px; background: #232938; overflow: hidden"><div class="grow" style="width: 92%; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #E0A93A, #F2C14E)"></div></div>
+          <span style="font-size: 12px; color: #98A1B3">276 из 300 Br · осталось 24 Br на 13 дней</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; justify-content: space-between; font-size: 14px"><span>Продукты</span><span style="color: #A8D98A; font-weight: 600">74%</span></div>
+          <div style="height: 8px; border-radius: 99px; background: #232938; overflow: hidden"><div class="grow" style="width: 74%; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #5E9C45, #85BB65); animation-delay: .62s"></div></div>
+          <span style="font-size: 12px; color: #98A1B3">592 из 800 Br</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; justify-content: space-between; font-size: 14px"><span>Транспорт</span><span style="color: #A8D98A; font-weight: 600">58%</span></div>
+          <div style="height: 8px; border-radius: 99px; background: #232938; overflow: hidden"><div class="grow" style="width: 58%; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #5E9C45, #85BB65); animation-delay: .74s"></div></div>
+          <span style="font-size: 12px; color: #98A1B3">87 из 150 Br</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="rise d5" aria-labelledby="up-h" style="display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline">
+        <h2 id="up-h" style="margin: 0; font-size: 18px; font-weight: 600">Ближайшие платежи</h2>
+        <a href="Recurring.dc.html" style="font-size: 14px; text-decoration: none">Все</a>
+      </div>
+      <div style="border-radius: 24px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column">
+        <div style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #1F2432">
+          <div style="width: 40px; height: 40px; border-radius: 13px; background: rgba(242,193,78,.16); color: #F2C14E; display: grid; place-items: center; flex: none">
+            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="7" y="2.5" width="10" height="19" rx="2.5"></rect><path d="M11 18.5h2"></path></svg>
+          </div>
+          <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 15px; font-weight: 500">Мобильная связь</span>
+            <span style="font-size: 12px; color: #F2C14E">Сегодня · ждёт подтверждения</span>
+          </div>
+          <button class="tap" style="min-height: 44px; padding: 0 14px; border-radius: 14px; border: 0; background: #85BB65; color: #0B0D12; font: 600 14px Onest, system-ui, sans-serif; cursor: pointer">18,50 Br ✓</button>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #1F2432">
+          <div style="width: 40px; height: 40px; border-radius: 13px; background: rgba(106,90,249,.2); color: #B4AAFF; display: grid; place-items: center; flex: none">
+            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7"></path><path d="M5 10v10h14V10"></path></svg>
+          </div>
+          <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 15px; font-weight: 500">Аренда квартиры</span>
+            <span style="font-size: 12px; color: #98A1B3">25 окт · через 3 дня</span>
+          </div>
+          <span style="font-size: 15px; font-weight: 600">−850,00 Br</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 14px 16px">
+          <div style="width: 40px; height: 40px; border-radius: 13px; background: rgba(92,200,255,.16); color: #8ED8FF; display: grid; place-items: center; flex: none">
+            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"></path><circle cx="12" cy="19.5" r=".8"></circle></svg>
+          </div>
+          <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 15px; font-weight: 500">Домашний интернет</span>
+            <span style="font-size: 12px; color: #98A1B3">27 окт · через 5 дней</span>
+          </div>
+          <span style="font-size: 15px; font-weight: 600">−32,90 Br</span>
+        </div>
+      </div>
+    </section>
+
+    <a href="Forecast.dc.html" class="rise d6 tap" aria-label="Прогноз на 30 дней, открыть подробно" style="text-decoration: none; color: #EEF1F6; border-radius: 24px; padding: 18px 18px 14px; background: linear-gradient(180deg, #161A24, #11141B); border: 1px solid #232938; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <span style="font-size: 18px; font-weight: 600">Прогноз на 30 дней</span>
+          <span style="font-size: 13px; color: #98A1B3">Через месяц ≈ <span style="color: #A8D98A; font-weight: 600">13 010 Br</span></span>
+        </div>
+        <span style="font-size: 12px; color: #98A1B3">обновлено 12 мин назад</span>
+      </div>
+      <svg role="img" aria-label="График прогноза на 30 дней: провал перед зарплатой 19 ноября, затем рост до 13 010 Br" width="350" height="116" viewBox="0 0 350 116" style="display: block; width: 100%; height: auto">
+        <defs>
+          <linearGradient id="fa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#85BB65" stop-opacity=".38"></stop><stop offset="1" stop-color="#85BB65" stop-opacity="0"></stop></linearGradient>
+          <linearGradient id="fl" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9C90FF"></stop><stop offset="1" stop-color="#85BB65"></stop></linearGradient>
+        </defs>
+        <line x1="0" y1="100" x2="350" y2="100" stroke="#FF5D73" stroke-opacity=".5" stroke-dasharray="4 5"></line>
+        <path class="fade" d="M0,40 L12,42 L24,72 L36,74 L48,76 L60,82 L72,84 L96,88 L120,70 L150,74 L190,80 L240,84 L300,90 L312,30 L330,32 L350,34 L350,116 L0,116 Z" fill="url(#fa)"></path>
+        <path class="draw" pathLength="1" d="M0,40 L12,42 L24,72 L36,74 L48,76 L60,82 L72,84 L96,88 L120,70 L150,74 L190,80 L240,84 L300,90 L312,30 L330,32 L350,34" fill="none" stroke="url(#fl)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+        <circle class="ping" cx="300" cy="90" r="5" fill="#F2C14E"></circle>
+        <circle cx="300" cy="90" r="5" fill="#F2C14E" stroke="#11141B" stroke-width="2"></circle>
+      </svg>
+      <div style="display: flex; justify-content: space-between; font-size: 12px; color: #98A1B3">
+        <span>Сегодня</span>
+        <span style="color: #F2C14E">Перед зарплатой 19 ноя</span>
+        <span>21 ноя</span>
+      </div>
+    </a>
+  </div>
+
+  <div style="position: absolute; left: 0; right: 0; bottom: 0">
+    <dc-import name="TabBar" active="home" theme="dark" hint-size="390px,96px"></dc-import>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1260}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

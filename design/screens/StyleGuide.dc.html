@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Токены и компоненты</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&amp;family=Unbounded:wght@500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#07080C}
+a{color:#B4AAFF}a:hover{color:#D4CEFF}
+.sheen{position:absolute;top:-30%;bottom:-30%;left:0;width:40%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);animation:sheen 4s ease-in-out infinite}
+.loopgrow{transform-origin:left center;animation:loopgrow 3s cubic-bezier(.2,.8,.2,1) infinite}
+.looprise{animation:looprise 3s cubic-bezier(.2,.8,.2,1) infinite}
+.loopdraw{stroke-dasharray:1;animation:loopdraw 3s cubic-bezier(.6,0,.2,1) infinite}
+.ping{transform-origin:center;transform-box:fill-box;animation:ping 2.2s ease-out infinite}
+@keyframes sheen{0%{transform:translateX(-140%) skewX(-18deg)}60%,100%{transform:translateX(320%) skewX(-18deg)}}
+@keyframes loopgrow{0%{transform:scaleX(0)}40%,100%{transform:scaleX(1)}}
+@keyframes looprise{0%{opacity:0;transform:translateY(14px)}30%,100%{opacity:1;transform:none}}
+@keyframes loopdraw{0%{stroke-dashoffset:1}50%,100%{stroke-dashoffset:0}}
+@keyframes ping{0%{transform:scale(1);opacity:.8}100%{transform:scale(3.2);opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</helmet>
+<div style="width: 1000px; height: 1700px; box-sizing: border-box; padding: 56px; background: radial-gradient(60% 30% at 100% 0%, rgba(106,90,249,.22) 0%, rgba(106,90,249,0) 70%), radial-gradient(50% 30% at 0% 100%, rgba(133,187,101,.14) 0%, rgba(133,187,101,0) 70%), #0B0D12; font-family: Onest, 'Segoe UI', Roboto, system-ui, sans-serif; color: #EEF1F6; display: flex; flex-direction: column; gap: 40px; font-variant-numeric: tabular-nums">
+
+  <header style="display: flex; justify-content: space-between; align-items: flex-end; gap: 24px">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <span style="font-size: 14px; color: #98A1B3; letter-spacing: .08em; text-transform: uppercase">Визуальная система</span>
+      <h1 style="margin: 0; font-family: Unbounded, system-ui, sans-serif; font-size: 52px; font-weight: 700; letter-spacing: -0.03em; line-height: 1">Банкнота</h1>
+      <p style="margin: 0; max-width: 560px; font-size: 16px; line-height: 1.5; color: #C7CDD8">Тёмная «ночная» база, чернильный фиолетовый как основной цвет и долларовый зелёный как вторичный. Гильош-узор купюры — фирменная текстура карточек.</p>
+    </div>
+    <div style="position: relative; overflow: hidden; width: 240px; height: 140px; flex: none; border-radius: 26px; background: repeating-radial-gradient(circle at 115% -20%, rgba(255,255,255,.08) 0 1px, rgba(255,255,255,0) 1px 9px), repeating-radial-gradient(circle at -20% 130%, rgba(133,187,101,.14) 0 1px, rgba(133,187,101,0) 1px 11px), linear-gradient(140deg, #6A5AF9 0%, #4636D8 48%, #24195F 100%); box-shadow: 0 24px 60px -24px rgba(106,90,249,.75); padding: 18px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between">
+      <span class="sheen" aria-hidden="true"></span>
+      <span style="font-size: 13px; color: rgba(255,255,255,.82)">Hero-градиент + гильош</span>
+      <span style="font-family: Unbounded, system-ui, sans-serif; font-size: 26px; font-weight: 600">12 480 Br</span>
+    </div>
+  </header>
+
+  <section aria-labelledby="c-h" style="display: flex; flex-direction: column; gap: 16px">
+    <h2 id="c-h" style="margin: 0; font-size: 20px; font-weight: 600">Цвет</h2>
+    <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px">
+      <sc-for list="{{brand}}" as="c" hint-placeholder-count="6">
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <div style="height: 92px; border-radius: 18px; background: {{c.hex}}; display: flex; align-items: flex-end; padding: 10px; box-sizing: border-box; color: {{c.on}}; font: 600 13px Onest, system-ui, sans-serif">{{c.role}}</div>
+          <span style="font-size: 14px; font-weight: 600">{{c.name}}</span>
+          <span style="font: 400 12px 'JetBrains Mono', ui-monospace, monospace; color: #98A1B3">{{c.hex}}</span>
+          <div style="display: flex; gap: 4px">
+            <sc-for list="{{c.ramp}}" as="r" hint-placeholder-count="4">
+              <span style="flex: 1; height: 14px; border-radius: 4px; background: {{r}}"></span>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+      <div style="padding: 16px; border-radius: 20px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column; gap: 10px">
+        <span style="font-size: 13px; color: #98A1B3">Нейтральные · тёмная тема</span>
+        <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px">
+          <sc-for list="{{darkN}}" as="n" hint-placeholder-count="6">
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <span style="height: 44px; border-radius: 12px; background: {{n.hex}}; border: 1px solid #2E3446"></span>
+              <span style="font-size: 11px; color: #C7CDD8">{{n.name}}</span>
+              <span style="font: 400 10px 'JetBrains Mono', ui-monospace, monospace; color: #98A1B3">{{n.hex}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="padding: 16px; border-radius: 20px; background: #F4F5F1; color: #12151C; display: flex; flex-direction: column; gap: 10px">
+        <span style="font-size: 13px; color: #5B6474">Нейтральные · светлая тема</span>
+        <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px">
+          <sc-for list="{{lightN}}" as="n" hint-placeholder-count="6">
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <span style="height: 44px; border-radius: 12px; background: {{n.hex}}; border: 1px solid #D9DCD4"></span>
+              <span style="font-size: 11px; color: #12151C">{{n.name}}</span>
+              <span style="font: 400 10px 'JetBrains Mono', ui-monospace, monospace; color: #5B6474">{{n.hex}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+    <div aria-labelledby="t-h" style="display: flex; flex-direction: column; gap: 14px">
+      <h2 id="t-h" style="margin: 0; font-size: 20px; font-weight: 600">Типографика</h2>
+      <div style="padding: 20px; border-radius: 20px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px"><span style="font-family: Unbounded, system-ui, sans-serif; font-size: 36px; font-weight: 600; letter-spacing: -0.02em">12 480,35</span><span style="font-size: 12px; color: #98A1B3">Unbounded 600 · 36</span></div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px"><span style="font-family: Unbounded, system-ui, sans-serif; font-size: 24px; font-weight: 600">Бюджет</span><span style="font-size: 12px; color: #98A1B3">Unbounded 600 · 24</span></div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px"><span style="font-size: 18px; font-weight: 600">Ближайшие платежи</span><span style="font-size: 12px; color: #98A1B3">Onest 600 · 18</span></div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px"><span style="font-size: 15px">Аренда квартиры</span><span style="font-size: 12px; color: #98A1B3">Onest 400 · 15</span></div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px"><span style="font-size: 12px; color: #98A1B3">25 окт · через 3 дня</span><span style="font-size: 12px; color: #98A1B3">Onest 400 · 12</span></div>
+        <span style="font-size: 13px; color: #C7CDD8; line-height: 1.5">Суммы — всегда tabular-nums, знак «+» / «−» перед числом, неразрывный пробел между разрядами, валюта после суммы.</span>
+      </div>
+    </div>
+    <div aria-labelledby="s-h" style="display: flex; flex-direction: column; gap: 14px">
+      <h2 id="s-h" style="margin: 0; font-size: 20px; font-weight: 600">Смысловые цвета</h2>
+      <div style="padding: 20px; border-radius: 20px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column; gap: 12px">
+        <div style="display: flex; justify-content: space-between; align-items: center; min-height: 34px"><span style="display: flex; align-items: center; gap: 10px"><span style="width: 12px; height: 12px; border-radius: 4px; background: #85BB65"></span>Доход, всё в норме</span><span style="font-weight: 700; color: #A8D98A">+2 400,00 Br</span></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; min-height: 34px"><span style="display: flex; align-items: center; gap: 10px"><span style="width: 12px; height: 12px; border-radius: 4px; background: #FF8A5B"></span>Расход (акцент)</span><span style="font-weight: 700; color: #FFA37E">−136,00 Br</span></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; min-height: 34px"><span style="display: flex; align-items: center; gap: 10px"><span style="width: 12px; height: 12px; border-radius: 4px; background: #9C90FF"></span>Перевод</span><span style="font-weight: 700; color: #C3BBFF">200,00 Br → 68,52 $</span></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; min-height: 34px"><span style="display: flex; align-items: center; gap: 10px"><span style="width: 12px; height: 12px; border-radius: 4px; background: #F2C14E"></span>Цели, 80% лимита, план</span><span style="font-weight: 700; color: #F2C14E">92%</span></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; min-height: 34px"><span style="display: flex; align-items: center; gap: 10px"><span style="width: 12px; height: 12px; border-radius: 4px; background: #FF6B7F"></span>Перерасход, тревога</span><span style="font-weight: 700; color: #FF8E9D">107%</span></div>
+        <span style="font-size: 13px; color: #C7CDD8; line-height: 1.5">Цвет никогда не единственный сигнал: рядом всегда знак, процент или подпись.</span>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="k-h" style="display: flex; flex-direction: column; gap: 16px">
+    <h2 id="k-h" style="margin: 0; font-size: 20px; font-weight: 600">Компоненты</h2>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px">
+      <div style="padding: 18px; border-radius: 20px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column; gap: 10px">
+        <span style="font-size: 13px; color: #98A1B3">Кнопки · высота 56 / 44</span>
+        <button style="min-height: 52px; border: 0; border-radius: 18px; background: linear-gradient(135deg, #8A7CFF, #6A5AF9 50%, #4636D8); color: #FFFFFF; font: 700 15px Onest, system-ui, sans-serif">Основная</button>
+        <button style="min-height: 52px; border: 0; border-radius: 18px; background: linear-gradient(135deg, #A6D987, #85BB65 50%, #4E9A3A); color: #0B0D12; font: 700 15px Onest, system-ui, sans-serif">Подтвердить</button>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+          <button style="min-height: 44px; border-radius: 14px; border: 1px solid #343B4E; background: transparent; color: #D4CEFF; font: 500 14px Onest, system-ui, sans-serif">Вторичная</button>
+          <button style="min-height: 44px; border-radius: 14px; border: 1px solid rgba(255,107,127,.35); background: rgba(255,107,127,.08); color: #FF8E9D; font: 600 14px Onest, system-ui, sans-serif">Удалить</button>
+        </div>
+      </div>
+      <div style="padding: 18px; border-radius: 20px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column; gap: 12px">
+        <span style="font-size: 13px; color: #98A1B3">Прогресс лимита · норма / 80% / сверх</span>
+        <div style="height: 8px; border-radius: 99px; background: #232938; overflow: hidden"><div class="loopgrow" style="width: 58%; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #5E9C45, #85BB65)"></div></div>
+        <div style="height: 8px; border-radius: 99px; background: #232938; overflow: hidden"><div class="loopgrow" style="width: 92%; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #E0A93A, #F2C14E)"></div></div>
+        <div style="height: 8px; border-radius: 99px; background: #232938; overflow: hidden"><div class="loopgrow" style="width: 100%; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #E2574C, #FF6B7F)"></div></div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; padding-top: 6px">
+          <span style="padding: 8px 14px; border-radius: 99px; background: rgba(106,90,249,.22); border: 1px solid #6A5AF9; color: #D4CEFF; font-size: 13px; font-weight: 500">Фильтр вкл.</span>
+          <span style="padding: 8px 14px; border-radius: 99px; background: #0F1218; border: 1px solid #232938; color: #98A1B3; font-size: 13px; font-weight: 500">Фильтр</span>
+          <span style="padding: 6px 10px; border-radius: 99px; background: rgba(133,187,101,.16); color: #A8D98A; font-size: 12px; font-weight: 600">+25 перенос</span>
+        </div>
+      </div>
+      <div style="padding: 18px; border-radius: 20px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column; gap: 12px">
+        <span style="font-size: 13px; color: #98A1B3">Строка операции · плитка 42, радиус 14</span>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 18px; background: #0F1218; border: 1px solid #232938">
+          <span style="width: 42px; height: 42px; border-radius: 14px; flex: none; display: grid; place-items: center; background: rgba(255,138,91,.14); color: #FF8A5B">
+            <svg aria-hidden="true" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM17 11h1.5a2.5 2.5 0 0 1 0 5H17M8 3v3M12 3v3"></path></svg>
+          </span>
+          <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px">Кофейня</span><span style="font-size: 12px; color: #98A1B3">Кафе и рестораны</span></span>
+          <span style="font-weight: 600">−6,80 Br</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 18px; background: #0F1218; border: 1px dashed rgba(242,193,78,.55)">
+          <span style="width: 42px; height: 42px; border-radius: 14px; flex: none; display: grid; place-items: center; background: rgba(242,193,78,.14); color: #F2C14E">
+            <svg aria-hidden="true" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="7" y="2.5" width="10" height="19" rx="2.5"></rect><path d="M11 18.5h2"></path></svg>
+          </span>
+          <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px">Мобильная связь</span><span style="font-size: 12px; color: #F2C14E">Planned — пунктир</span></span>
+          <span style="font-weight: 600">−18,50 Br</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="m-h" style="display: flex; flex-direction: column; gap: 16px">
+    <h2 id="m-h" style="margin: 0; font-size: 20px; font-weight: 600">Движение</h2>
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px">
+      <div style="padding: 18px; border-radius: 20px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column; gap: 12px">
+        <div style="height: 64px; display: flex; flex-direction: column; gap: 6px; justify-content: center">
+          <div class="looprise" style="height: 14px; width: 80%; border-radius: 6px; background: #2A3142"></div>
+          <div class="looprise" style="height: 14px; width: 60%; border-radius: 6px; background: #2A3142; animation-delay: .1s"></div>
+          <div class="looprise" style="height: 14px; width: 70%; border-radius: 6px; background: #2A3142; animation-delay: .2s"></div>
+        </div>
+        <span style="font-size: 14px; font-weight: 600">Появление</span>
+        <span style="font: 400 11px 'JetBrains Mono', ui-monospace, monospace; color: #98A1B3">700ms · (.2,.8,.2,1) · шаг 70ms</span>
+      </div>
+      <div style="padding: 18px; border-radius: 20px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column; gap: 12px">
+        <svg aria-hidden="true" width="100%" height="64" viewBox="0 0 180 64" preserveAspectRatio="none">
+          <path class="loopdraw" pathLength="1" d="M0,40 L20,42 L36,22 L60,30 L90,50 L120,44 L140,14 L180,10" fill="none" stroke="#85BB65" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <span style="font-size: 14px; font-weight: 600">Отрисовка графика</span>
+        <span style="font: 400 11px 'JetBrains Mono', ui-monospace, monospace; color: #98A1B3">1800ms · (.6,0,.2,1)</span>
+      </div>
+      <div style="padding: 18px; border-radius: 20px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column; gap: 12px">
+        <div style="height: 64px; display: grid; place-items: center">
+          <svg aria-hidden="true" width="40" height="40" viewBox="0 0 40 40"><circle class="ping" cx="20" cy="20" r="6" fill="#FF6B7F"></circle><circle cx="20" cy="20" r="6" fill="#FF6B7F"></circle></svg>
+        </div>
+        <span style="font-size: 14px; font-weight: 600">Тревожная точка</span>
+        <span style="font: 400 11px 'JetBrains Mono', ui-monospace, monospace; color: #98A1B3">2200ms · ease-out · loop</span>
+      </div>
+      <div style="padding: 18px; border-radius: 20px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column; gap: 12px">
+        <div style="position: relative; overflow: hidden; height: 64px; border-radius: 14px; background: linear-gradient(140deg, #6A5AF9, #24195F)"><span class="sheen" aria-hidden="true"></span></div>
+        <span style="font-size: 14px; font-weight: 600">Блик купюры</span>
+        <span style="font: 400 11px 'JetBrains Mono', ui-monospace, monospace; color: #98A1B3">7s · пауза 55% · только hero</span>
+      </div>
+    </div>
+    <span style="font-size: 13px; color: #98A1B3">Все анимации отключаются при «Уменьшить движение» в системе.</span>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1000,"height":1700}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      brand: [
+        { name: 'Чернила', role: 'primary', hex: '#6A5AF9', on: '#FFFFFF', ramp: ['#D4CEFF', '#8A7CFF', '#4636D8', '#24195F'] },
+        { name: 'Доллар', role: 'secondary', hex: '#85BB65', on: '#0B0D12', ramp: ['#DDF7CC', '#A6D987', '#5E9C45', '#3E7A2A'] },
+        { name: 'Золото', role: 'tertiary', hex: '#F2C14E', on: '#0B0D12', ramp: ['#FFE29A', '#F2C14E', '#E0A93A', '#9A6B00'] },
+        { name: 'Коралл', role: 'расход', hex: '#FF8A5B', on: '#0B0D12', ramp: ['#FFD3C0', '#FFA37E', '#E06A3A', '#C2521F'] },
+        { name: 'Рубин', role: 'error', hex: '#FF6B7F', on: '#0B0D12', ramp: ['#FFC7CF', '#FF8E9D', '#E2574C', '#C53048'] },
+        { name: 'Небо', role: 'инфо', hex: '#5CC8FF', on: '#0B0D12', ramp: ['#C9EEFF', '#8ED8FF', '#2FA5E0', '#1F7FB0'] }
+      ],
+      darkN: [
+        { name: 'Фон', hex: '#0B0D12' }, { name: 'Поверхность', hex: '#141821' }, { name: 'Поверхн. 2', hex: '#1B2030' },
+        { name: 'Линия', hex: '#232938' }, { name: 'Вторичный', hex: '#98A1B3' }, { name: 'Текст', hex: '#EEF1F6' }
+      ],
+      lightN: [
+        { name: 'Фон', hex: '#F4F5F1' }, { name: 'Поверхность', hex: '#FFFFFF' }, { name: 'Поверхн. 2', hex: '#ECEEE8' },
+        { name: 'Линия', hex: '#E4E7E0' }, { name: 'Вторичный', hex: '#5B6474' }, { name: 'Текст', hex: '#12151C' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

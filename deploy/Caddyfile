@@ -1,0 +1,13 @@
+# DOMAIN comes from deploy/.env. Caddy obtains and renews the TLS certificate automatically.
+# Without a domain set DOMAIN=:80 to serve plain HTTP (not recommended: tokens travel in clear text).
+{$DOMAIN} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		-Server
+	}
+
+	reverse_proxy api:8080
+}

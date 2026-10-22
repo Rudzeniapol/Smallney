@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Аналитика</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&amp;family=Unbounded:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#07080C}
+a{color:#B4AAFF}a:hover{color:#D4CEFF}
+.rise{animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
+.d1{animation-delay:.05s}.d2{animation-delay:.12s}.d3{animation-delay:.2s}.d4{animation-delay:.28s}.d5{animation-delay:.36s}
+.seg{animation:seg 1s cubic-bezier(.3,.7,.2,1) both}
+.bar{transform-origin:bottom;animation:bar .9s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+@keyframes seg{from{stroke-dasharray:0 100}}
+@keyframes bar{from{transform:scaleY(0)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 1320px; position: relative; overflow: hidden; box-sizing: border-box; background: radial-gradient(100% 30% at 0% 0%, rgba(92,200,255,.12) 0%, rgba(92,200,255,0) 70%), radial-gradient(90% 30% at 100% 4%, rgba(106,90,249,.22) 0%, rgba(106,90,249,0) 70%), #0B0D12; font-family: Onest, 'Segoe UI', Roboto, system-ui, sans-serif; color: #EEF1F6; font-variant-numeric: tabular-nums">
+  <div style="padding: 48px 20px 120px; display: flex; flex-direction: column; gap: 18px">
+
+    <header class="rise" style="display: flex; align-items: center; justify-content: space-between">
+      <h1 style="margin: 0; font-family: Unbounded, system-ui, sans-serif; font-size: 26px; font-weight: 600; letter-spacing: -0.02em">Аналитика</h1>
+      <span style="font-size: 13px; color: #98A1B3">5 окт — 22 окт</span>
+    </header>
+
+    <div class="rise d1" role="tablist" aria-label="Период" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 16px; background: #141821; border: 1px solid #232938">
+      <sc-for list="{{periods}}" as="p" hint-placeholder-count="3">
+        <button role="tab" aria-selected="{{p.sel}}" onClick="{{p.pick}}" style="min-height: 40px; border: 0; border-radius: 12px; background: {{p.bg}}; color: {{p.fg}}; font: 600 14px Onest, system-ui, sans-serif; cursor: pointer">{{p.label}}</button>
+      </sc-for>
+    </div>
+
+    <section class="rise d2" aria-labelledby="cat-h" style="border-radius: 26px; padding: 18px; background: linear-gradient(180deg, #161A24, #11141B); border: 1px solid #232938; display: flex; flex-direction: column; gap: 16px">
+      <h2 id="cat-h" style="margin: 0; font-size: 18px; font-weight: 600">Расходы по категориям</h2>
+      <div style="position: relative; width: 200px; height: 200px; align-self: center">
+        <svg role="img" aria-label="Расходы за период: 1 312 Br, крупнейшая категория — продукты, 45%" width="200" height="200" viewBox="0 0 200 200" style="transform: rotate(-90deg)">
+          <circle cx="100" cy="100" r="78" fill="none" stroke="#1B2030" stroke-width="22"></circle>
+          <sc-for list="{{segs}}" as="s" hint-placeholder-count="8">
+            <circle class="seg" cx="100" cy="100" r="78" fill="none" stroke="{{s.col}}" stroke-width="22" pathLength="100" style="stroke-dasharray: {{s.dash}}; stroke-dashoffset: {{s.off}}; animation-delay: {{s.delay}}"></circle>
+          </sc-for>
+        </svg>
+        <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px">
+          <span style="font-family: Unbounded, system-ui, sans-serif; font-size: 24px; font-weight: 600">1 312 Br</span>
+          <span style="font-size: 12px; color: #98A1B3">расходы</span>
+          <span style="font-size: 12px; font-weight: 600; color: #A8D98A">−8,4% к сентябрю</span>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <sc-for list="{{legend}}" as="l" hint-placeholder-count="5">
+          <div style="display: flex; align-items: center; gap: 10px; min-height: 36px; font-size: 14px">
+            <span style="width: 10px; height: 10px; border-radius: 3px; background: {{l.col}}; flex: none"></span>
+            <span style="flex: 1">{{l.name}}</span>
+            <span style="font-size: 12px; font-weight: 600; color: {{l.dColor}}; min-width: 44px; text-align: right">{{l.delta}}</span>
+            <span style="color: #98A1B3; min-width: 38px; text-align: right">{{l.pct}}</span>
+            <span style="font-weight: 600; min-width: 78px; text-align: right">{{l.sum}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section class="rise d3" aria-labelledby="dyn-h" style="border-radius: 26px; padding: 18px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline">
+        <h2 id="dyn-h" style="margin: 0; font-size: 18px; font-weight: 600">Динамика за 6 мес</h2>
+        <div style="display: flex; gap: 12px; font-size: 12px; color: #98A1B3">
+          <span style="display: flex; align-items: center; gap: 5px"><span style="width: 8px; height: 8px; border-radius: 2px; background: #85BB65"></span>Доход</span>
+          <span style="display: flex; align-items: center; gap: 5px"><span style="width: 8px; height: 8px; border-radius: 2px; background: #FF8A5B"></span>Расход</span>
+        </div>
+      </div>
+      <div role="img" aria-label="Доходы и расходы по месяцам, май — октябрь" style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; align-items: end; height: 150px; border-bottom: 1px solid #232938">
+        <sc-for list="{{months}}" as="m" hint-placeholder-count="6">
+          <div style="display: flex; gap: 3px; align-items: flex-end; justify-content: center; height: 100%">
+            <div class="bar" style="width: 14px; height: {{m.ih}}; border-radius: 5px 5px 2px 2px; background: linear-gradient(180deg, #A6D987, #5E9C45); animation-delay: {{m.delay}}"></div>
+            <div class="bar" style="width: 14px; height: {{m.eh}}; border-radius: 5px 5px 2px 2px; background: {{m.ebg}}; animation-delay: {{m.delay2}}"></div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; font-size: 12px; color: #98A1B3; text-align: center">
+        <sc-for list="{{months}}" as="m" hint-placeholder-count="6"><span>{{m.label}}</span></sc-for>
+      </div>
+    </section>
+
+    <section class="rise d4" aria-labelledby="avg-h" style="display: flex; flex-direction: column; gap: 10px">
+      <h2 id="avg-h" style="margin: 0; font-size: 18px; font-weight: 600">Средние траты</h2>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+        <div style="padding: 14px 12px; border-radius: 18px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column; gap: 4px">
+          <span style="font-size: 12px; color: #98A1B3">В день</span>
+          <span style="font-size: 17px; font-weight: 700">73 Br</span>
+        </div>
+        <div style="padding: 14px 12px; border-radius: 18px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column; gap: 4px">
+          <span style="font-size: 12px; color: #98A1B3">В неделю</span>
+          <span style="font-size: 17px; font-weight: 700">510 Br</span>
+        </div>
+        <div style="padding: 14px 12px; border-radius: 18px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column; gap: 4px">
+          <span style="font-size: 12px; color: #98A1B3">В месяц</span>
+          <span style="font-size: 17px; font-weight: 700">2 174 Br</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="rise d5" aria-labelledby="top-h" style="display: flex; flex-direction: column; gap: 10px">
+      <h2 id="top-h" style="margin: 0; font-size: 18px; font-weight: 600">Крупнейшие траты</h2>
+      <div style="border-radius: 22px; background: #141821; border: 1px solid #232938; display: flex; flex-direction: column">
+        <div style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #1F2432">
+          <span style="font-family: Unbounded, system-ui, sans-serif; font-size: 14px; font-weight: 700; color: #F2C14E; width: 18px">1</span>
+          <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px">Куртка</span><span style="font-size: 12px; color: #98A1B3">Одежда · 20 окт</span></span>
+          <span style="font-weight: 600">136,00 Br</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #1F2432">
+          <span style="font-family: Unbounded, system-ui, sans-serif; font-size: 14px; font-weight: 700; color: #C7CDD8; width: 18px">2</span>
+          <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px">Супермаркет</span><span style="font-size: 12px; color: #98A1B3">Продукты · 12 окт</span></span>
+          <span style="font-weight: 600">94,30 Br</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 14px 16px">
+          <span style="font-family: Unbounded, system-ui, sans-serif; font-size: 14px; font-weight: 700; color: #C9865A; width: 18px">3</span>
+          <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px">Ужин с друзьями</span><span style="font-size: 12px; color: #98A1B3">Кафе и рестораны · 17 окт</span></span>
+          <span style="font-weight: 600">78,00 Br</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div style="position: absolute; left: 0; right: 0; bottom: 0">
+    <dc-import name="TabBar" active="analytics" theme="dark" hint-size="390px,96px"></dc-import>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1320}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { period: 'm' };
+  }
+  renderVals() {
+    const fmt = (n) => {
+      const [i, f] = n.toFixed(2).split('.');
+      return i.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ',' + f + ' Br';
+    };
+    const cats = [
+      ['Продукты', '#85BB65', 592, -6],
+      ['Кафе и рестораны', '#FF8A5B', 276, 18],
+      ['Одежда', '#FF7A9C', 136, 0],
+      ['Транспорт', '#5CC8FF', 87, -12],
+      ['Подписки', '#F2C14E', 64.2, 4],
+      ['Подарки', '#C58BFF', 61.2, 0],
+      ['Аренда и ЖКХ', '#8A7CFF', 48, -2],
+      ['Досуг', '#3FA7A0', 48, -35]
+    ];
+    const total = cats.reduce((s, c) => s + c[2], 0);
+    let cum = 0;
+    const gap = 0.8;
+    const segs = cats.map(([name, col, v], i) => {
+      const p = v / total * 100;
+      const seg = { col, dash: Math.max(0.1, p - gap).toFixed(2) + ' ' + (100 - p + gap).toFixed(2), off: (-cum).toFixed(2), delay: (0.3 + i * 0.12).toFixed(2) + 's' };
+      cum += p;
+      return seg;
+    });
+    const legend = cats.slice(0, 5).map(([name, col, v, d]) => ({
+      name, col, sum: fmt(v), pct: Math.round(v / total * 100) + '%',
+      delta: d === 0 ? 'новое' : (d > 0 ? '+' : '−') + Math.abs(d) + '%',
+      dColor: d > 0 ? '#FFA37E' : d < 0 ? '#A8D98A' : '#98A1B3'
+    }));
+    const inc = [2400, 2450, 2600, 2400, 2900, 2412];
+    const exp = [1980, 2210, 2650, 1890, 2140, 1312];
+    const labels = ['май', 'июн', 'июл', 'авг', 'сен', 'окт'];
+    const max = 3000;
+    const months = labels.map((label, i) => ({
+      label,
+      ih: (inc[i] / max * 100).toFixed(1) + '%',
+      eh: (exp[i] / max * 100).toFixed(1) + '%',
+      ebg: i === 5 ? 'repeating-linear-gradient(135deg, #FF8A5B 0 6px, #C9663E 6px 10px)' : exp[i] > inc[i] ? 'linear-gradient(180deg, #FF6B7F, #C24456)' : 'linear-gradient(180deg, #FFB08C, #E06A3A)',
+      delay: (0.3 + i * 0.08).toFixed(2) + 's', delay2: (0.36 + i * 0.08).toFixed(2) + 's'
+    }));
+    const periods = [['m', 'Месяц'], ['q', 'Квартал'], ['y', 'Год']].map(([k, label]) => ({
+      label, sel: this.state.period === k ? 'true' : 'false',
+      bg: this.state.period === k ? '#6A5AF9' : 'transparent', fg: this.state.period === k ? '#FFFFFF' : '#98A1B3',
+      pick: () => this.setState({ period: k })
+    }));
+    return { segs, legend, months, periods };
+  }
+}
+</script>
+</body>
+</html>

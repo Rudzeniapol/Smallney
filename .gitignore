@@ -1,0 +1,33 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+TestResults/
+coverage*/
+
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+*.iml
+mobile/android/local.properties
+mobile/ios/Flutter/Generated.xcconfig
+mobile/ios/Pods/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+
+# Secrets and server data
+.env
+deploy/.env
+deploy/backups/
+
+# Design source archive and its root copy; the extracted version lives in design/
+/finance-design.zip
+/DESIGN.md

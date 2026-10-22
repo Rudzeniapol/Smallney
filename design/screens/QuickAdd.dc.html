@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Быстрое добавление</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&amp;family=Unbounded:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#07080C}
+a{color:#B4AAFF}a:hover{color:#D4CEFF}
+.rise{animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
+.d1{animation-delay:.05s}.d2{animation-delay:.12s}.d3{animation-delay:.2s}
+.caret{display:inline-block;width:3px;height:44px;margin-left:4px;border-radius:2px;background:#85BB65;animation:blink 1s steps(1) infinite}
+.key{transition:transform .12s ease,background .2s ease}.key:active{transform:scale(.94);background:#262C3B!important}
+.pop{animation:pop .35s cubic-bezier(.2,1.4,.4,1) both}
+.toast{animation:toast .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+@keyframes blink{50%{opacity:0}}
+@keyframes pop{from{transform:scale(.8)}}
+@keyframes toast{from{opacity:0;transform:translateY(-16px)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; box-sizing: border-box; padding: 48px 20px 24px; display: flex; flex-direction: column; gap: 16px; background: radial-gradient(90% 40% at 50% 0%, {{glow}} 0%, rgba(0,0,0,0) 70%), #0B0D12; font-family: Onest, 'Segoe UI', Roboto, system-ui, sans-serif; color: #EEF1F6; font-variant-numeric: tabular-nums">
+
+  <sc-if value="{{saved}}" hint-placeholder-val="{{ false }}">
+    <div class="toast" role="status" style="position: absolute; top: 16px; left: 20px; right: 20px; z-index: 5; padding: 12px 16px; border-radius: 16px; background: #1B2A1A; border: 1px solid #3E6B2E; color: #C9F0B0; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 10px">
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"></path></svg>
+      Сохранено · отправится при синхронизации
+    </div>
+  </sc-if>
+
+  <header class="rise" style="display: flex; align-items: center; gap: 12px">
+    <a href="Main.dc.html" aria-label="Закрыть" style="width: 44px; height: 44px; border-radius: 14px; background: #141821; border: 1px solid #232938; display: grid; place-items: center; color: #EEF1F6; flex: none">
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+    </a>
+    <div role="tablist" aria-label="Тип операции" style="flex: 1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 16px; background: #141821; border: 1px solid #232938">
+      <sc-for list="{{types}}" as="t" hint-placeholder-count="3">
+        <button role="tab" aria-selected="{{t.sel}}" onClick="{{t.pick}}" style="min-height: 40px; border: 0; border-radius: 12px; background: {{t.bg}}; color: {{t.fg}}; font: 600 14px Onest, system-ui, sans-serif; cursor: pointer; transition: background .25s ease, color .25s ease">{{t.label}}</button>
+      </sc-for>
+    </div>
+  </header>
+
+  <section class="rise d1" aria-label="Сумма" style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 8px 0 4px">
+    <div style="display: flex; align-items: center; font-family: Unbounded, system-ui, sans-serif; font-weight: 600; letter-spacing: -0.02em">
+      <span style="font-size: 44px; color: {{signColor}}">{{sign}}</span>
+      <span style="font-size: 52px; color: {{amountColor}}">{{amountText}}</span>
+      <span class="caret" aria-hidden="true"></span>
+      <span style="font-size: 26px; margin-left: 10px; color: #98A1B3">Br</span>
+    </div>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center">
+      <button style="min-height: 36px; padding: 0 12px; border-radius: 12px; border: 1px solid #232938; background: #141821; color: #EEF1F6; font: 500 13px Onest, system-ui, sans-serif; display: inline-flex; align-items: center; gap: 6px; cursor: pointer">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B4AAFF" stroke-width="1.9" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="M3 10h18"></path></svg>
+        Зарплатная карта
+      </button>
+      <button style="min-height: 36px; padding: 0 12px; border-radius: 12px; border: 1px solid #232938; background: #141821; color: #EEF1F6; font: 500 13px Onest, system-ui, sans-serif; display: inline-flex; align-items: center; gap: 6px; cursor: pointer">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#98A1B3" stroke-width="1.9" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>
+        Сегодня
+      </button>
+      <button style="min-height: 36px; padding: 0 12px; border-radius: 12px; border: 1px solid #232938; background: #141821; color: #98A1B3; font: 500 13px Onest, system-ui, sans-serif; display: inline-flex; align-items: center; gap: 6px; cursor: pointer">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg>
+        Заметка
+      </button>
+    </div>
+  </section>
+
+  <sc-if value="{{isTransfer}}" hint-placeholder-val="{{ false }}">
+    <section class="rise d2" aria-label="Перевод между счетами" style="display: flex; flex-direction: column; gap: 8px; min-height: 196px">
+      <div style="padding: 14px 16px; border-radius: 18px; background: #141821; border: 1px solid #232938; display: flex; justify-content: space-between; align-items: center"><span style="color: #98A1B3; font-size: 13px">Откуда</span><span style="font-weight: 600">Зарплатная карта · BYN</span></div>
+      <div style="align-self: center; width: 36px; height: 36px; border-radius: 12px; background: rgba(106,90,249,.2); color: #B4AAFF; display: grid; place-items: center">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"></path></svg>
+      </div>
+      <div style="padding: 14px 16px; border-radius: 18px; background: #141821; border: 1px solid #232938; display: flex; justify-content: space-between; align-items: center"><span style="color: #98A1B3; font-size: 13px">Куда</span><span style="font-weight: 600">Депозит · USD</span></div>
+      <span style="font-size: 12px; color: #98A1B3; text-align: center">Зачислится ≈ 7,65 $ по курсу НБРБ на сегодня</span>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{showCats}}" hint-placeholder-val="{{ true }}">
+    <section class="rise d2" aria-labelledby="cat-h" style="display: flex; flex-direction: column; gap: 10px">
+      <h2 id="cat-h" style="margin: 0; font-size: 13px; font-weight: 500; color: #98A1B3">Недавние первыми</h2>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px 8px">
+        <sc-for list="{{cats}}" as="c" hint-placeholder-count="8">
+          <button aria-pressed="{{c.sel}}" onClick="{{c.pick}}" style="border: 0; background: none; padding: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; color: {{c.labelColor}}; font: 500 12px Onest, system-ui, sans-serif; cursor: pointer; min-height: 80px">
+            <span style="width: 54px; height: 54px; border-radius: 18px; display: grid; place-items: center; background: {{c.bg}}; color: {{c.fg}}; box-shadow: {{c.ring}}; transition: all .25s ease">
+              <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="{{c.d}}"></path></svg>
+            </span>
+            {{c.label}}
+          </button>
+        </sc-for>
+      </div>
+    </section>
+  </sc-if>
+
+  <section class="rise d3" aria-label="Цифровая клавиатура" style="margin-top: auto; display: flex; flex-direction: column; gap: 10px">
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+      <sc-for list="{{keys}}" as="k" hint-placeholder-count="12">
+        <button class="key" aria-label="{{k.aria}}" onClick="{{k.press}}" style="min-height: 52px; border: 0; border-radius: 16px; background: #141821; color: #EEF1F6; font: 500 24px Onest, system-ui, sans-serif; cursor: pointer; display: grid; place-items: center">
+          <sc-if value="{{k.isBack}}" hint-placeholder-val="{{ false }}">
+            <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5h11v14H9l-6-7z"></path><path d="m12 9 5 6M17 9l-5 6"></path></svg>
+          </sc-if>
+          <sc-if value="{{k.isText}}" hint-placeholder-val="{{ true }}">{{k.label}}</sc-if>
+        </button>
+      </sc-for>
+    </div>
+    <button class="pop" onClick="{{save}}" disabled="{{saveDisabled}}" style="min-height: 56px; border: 0; border-radius: 18px; background: {{saveBg}}; color: #0B0D12; font: 700 16px Onest, system-ui, sans-serif; cursor: pointer; box-shadow: 0 16px 32px -14px {{saveShadow}}; opacity: {{saveOpacity}}">{{saveLabel}}</button>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { amt: '24,5', type: 'expense', cat: 'cafe', saved: false };
+  }
+  componentWillUnmount() { clearTimeout(this.t); }
+  press(k) {
+    let a = this.state.amt;
+    if (k === 'back') a = a.slice(0, -1);
+    else if (k === ',') { if (!a.includes(',')) a = (a || '0') + ','; }
+    else {
+      const parts = a.split(',');
+      if (parts.length === 2 && parts[1].length >= 2) return;
+      if (parts[0].length >= 7 && parts.length === 1) return;
+      a = a === '0' ? k : a + k;
+    }
+    this.setState({ amt: a });
+  }
+  value() { const n = parseFloat((this.state.amt || '0').replace(',', '.')); return isNaN(n) ? 0 : n; }
+  fmt(n) {
+    const [i, f] = n.toFixed(2).split('.');
+    return i.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ',' + f;
+  }
+  renderVals() {
+    const s = this.state;
+    const T = {
+      expense: { label: 'Расход', bg: '#FF8A5B', sign: '−', glow: 'rgba(255,138,91,.18)' },
+      income: { label: 'Доход', bg: '#85BB65', sign: '+', glow: 'rgba(133,187,101,.2)' },
+      transfer: { label: 'Перевод', bg: '#9C90FF', sign: '', glow: 'rgba(106,90,249,.24)' }
+    };
+    const types = Object.keys(T).map((k) => ({
+      label: T[k].label, sel: s.type === k ? 'true' : 'false',
+      bg: s.type === k ? T[k].bg : 'transparent', fg: s.type === k ? '#0B0D12' : '#98A1B3',
+      pick: () => this.setState({ type: k, cat: k === 'income' ? 'salary' : k === 'expense' ? 'cafe' : null })
+    }));
+    const exp = [
+      ['cafe', 'Кафе', '#FF8A5B', 'M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM17 11h1.5a2.5 2.5 0 0 1 0 5H17M8 3v3M12 3v3'],
+      ['food', 'Продукты', '#85BB65', 'M3 4h2l2.4 11h11L21 8H6.2M8 20a1.3 1.3 0 1 0 2.6 0a1.3 1.3 0 1 0-2.6 0M16 20a1.3 1.3 0 1 0 2.6 0a1.3 1.3 0 1 0-2.6 0'],
+      ['bus', 'Транспорт', '#5CC8FF', 'M7 3h10a3 3 0 0 1 3 3v12H4V6a3 3 0 0 1 3-3zM4 11h16M8 21v-3M16 21v-3'],
+      ['subs', 'Подписки', '#F2C14E', 'M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3'],
+      ['home', 'Дом', '#9C90FF', 'M3 11 12 4l9 7M5 10v10h14V10'],
+      ['fun', 'Досуг', '#C58BFF', 'M4 6h16v4a2 2 0 0 0 0 4v4H4v-4a2 2 0 0 0 0-4zM14 6v2M14 11v2M14 16v2'],
+      ['wear', 'Одежда', '#FF7A9C', 'M8 3 3 6l2 4 2-1v12h10V9l2 1 2-4-5-3a4 4 0 0 1-8 0z'],
+      ['more', 'Все', '#98A1B3', 'M5 12h.01M12 12h.01M19 12h.01']
+    ];
+    const inc = [
+      ['salary', 'Зарплата', '#85BB65', 'M3 8h18v12H3zM8 8V5h8v3M3 13h18'],
+      ['side', 'Подработка', '#5CC8FF', 'M14 4l6 6-10 10H4v-6zM12 6l6 6'],
+      ['cash', 'Кэшбэк', '#F2C14E', 'M3 6h18v12H3zM12 9.5a2.5 2.5 0 1 0 0 5a2.5 2.5 0 1 0 0-5'],
+      ['gift', 'Подарки', '#FF7A9C', 'M4 11h16v10H4zM3 7h18v4H3zM12 7v14'],
+      ['pct', 'Проценты', '#9C90FF', 'M19 5 5 19M7 5a2 2 0 1 0 0 4a2 2 0 1 0 0-4M17 15a2 2 0 1 0 0 4a2 2 0 1 0 0-4'],
+      ['more', 'Все', '#98A1B3', 'M5 12h.01M12 12h.01M19 12h.01']
+    ];
+    const list = s.type === 'income' ? inc : exp;
+    const cats = list.map(([id, label, col, d]) => {
+      const on = s.cat === id;
+      return {
+        label, d, sel: on ? 'true' : 'false',
+        bg: on ? col : col + '22', fg: on ? '#0B0D12' : col,
+        ring: on ? '0 0 0 3px #0B0D12, 0 0 0 5px ' + col : 'none',
+        labelColor: on ? '#EEF1F6' : '#98A1B3',
+        pick: () => this.setState({ cat: id })
+      };
+    });
+    const keys = ['1','2','3','4','5','6','7','8','9',',','0','back'].map((k) => ({
+      label: k, isBack: k === 'back', isText: k !== 'back',
+      aria: k === 'back' ? 'Стереть' : k === ',' ? 'Запятая' : k,
+      press: () => this.press(k)
+    }));
+    const v = this.value();
+    const empty = v <= 0;
+    const t = T[s.type];
+    const intPart = (s.amt || '0').split(',');
+    const amountText = intPart[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + (intPart.length > 1 ? ',' + intPart[1] : '');
+    return {
+      types, cats, keys,
+      glow: t.glow,
+      sign: t.sign, signColor: t.bg,
+      amountText, amountColor: empty ? '#5B6474' : '#FFFFFF',
+      isTransfer: s.type === 'transfer', showCats: s.type !== 'transfer',
+      saved: s.saved,
+      saveDisabled: empty,
+      saveOpacity: empty ? 0.45 : 1,
+      saveBg: s.type === 'expense' ? 'linear-gradient(135deg, #FFB08C, #FF8A5B)' : s.type === 'income' ? 'linear-gradient(135deg, #A6D987, #85BB65)' : 'linear-gradient(135deg, #C3BBFF, #9C90FF)',
+      saveShadow: t.bg,
+      saveLabel: 'Сохранить · ' + (t.sign ? t.sign : '') + this.fmt(v) + ' Br',
+      save: () => {
+        if (empty) return;
+        clearTimeout(this.t);
+        this.setState({ saved: true, amt: '' });
+        this.t = setTimeout(() => this.setState({ saved: false }), 2200);
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

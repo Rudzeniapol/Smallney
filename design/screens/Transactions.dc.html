@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Операции</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&amp;family=Unbounded:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#07080C}
+a{color:#B4AAFF}a:hover{color:#D4CEFF}
+.rise{animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
+.d1{animation-delay:.05s}.d2{animation-delay:.12s}.d3{animation-delay:.2s}.d4{animation-delay:.28s}
+.swipe{animation:swipe 2.6s .9s cubic-bezier(.5,0,.2,1) both}
+.chip{transition:background .2s ease,color .2s ease}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+@keyframes swipe{0%,20%{transform:translateX(0)}55%,100%{transform:translateX(-152px)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 1240px; position: relative; overflow: hidden; box-sizing: border-box; background: radial-gradient(90% 30% at 100% 0%, rgba(106,90,249,.2) 0%, rgba(106,90,249,0) 70%), #0B0D12; font-family: Onest, 'Segoe UI', Roboto, system-ui, sans-serif; color: #EEF1F6; font-variant-numeric: tabular-nums">
+  <div style="padding: 48px 20px 120px; display: flex; flex-direction: column; gap: 16px">
+
+    <header class="rise" style="display: flex; align-items: center; justify-content: space-between">
+      <h1 style="margin: 0; font-family: Unbounded, system-ui, sans-serif; font-size: 26px; font-weight: 600; letter-spacing: -0.02em">Операции</h1>
+      <button aria-label="Фильтры" style="width: 44px; height: 44px; border-radius: 14px; background: #141821; border: 1px solid #232938; display: grid; place-items: center; color: #EEF1F6; cursor: pointer; position: relative">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4 2v-8z"></path></svg>
+        <span style="position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; border-radius: 9px; background: #6A5AF9; color: #FFFFFF; font-size: 11px; font-weight: 700; display: grid; place-items: center">2</span>
+      </button>
+    </header>
+
+    <div class="rise d1" style="position: relative">
+      <label for="q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Поиск по заметке</label>
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#98A1B3" stroke-width="2" stroke-linecap="round" style="position: absolute; left: 14px; top: 15px"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+      <input id="q" type="search" placeholder="Поиск по заметке и тегам" style="width: 100%; box-sizing: border-box; height: 48px; padding: 0 14px 0 42px; border-radius: 16px; border: 1px solid #232938; background: #141821; color: #EEF1F6; font: 400 15px Onest, system-ui, sans-serif; outline: none">
+    </div>
+
+    <div class="rise d2" role="group" aria-label="Быстрые фильтры" style="display: flex; gap: 8px; overflow-x: auto; margin: 0 -20px; padding: 0 20px">
+      <sc-for list="{{chips}}" as="c" hint-placeholder-count="5">
+        <button class="chip" aria-pressed="{{c.on}}" onClick="{{c.toggle}}" style="flex: none; min-height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid {{c.border}}; background: {{c.bg}}; color: {{c.fg}}; font: 500 13px Onest, system-ui, sans-serif; cursor: pointer; white-space: nowrap">{{c.label}}</button>
+      </sc-for>
+    </div>
+
+    <section class="rise d3" aria-label="Итоги за период" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+      <div style="padding: 14px; border-radius: 18px; background: linear-gradient(160deg, rgba(133,187,101,.16), rgba(133,187,101,.04)); border: 1px solid rgba(133,187,101,.25); display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 12px; color: #98A1B3">Доходы · октябрь</span>
+        <span style="font-size: 18px; font-weight: 700; color: #A8D98A">+2 412,40 Br</span>
+      </div>
+      <div style="padding: 14px; border-radius: 18px; background: linear-gradient(160deg, rgba(255,138,91,.16), rgba(255,138,91,.04)); border: 1px solid rgba(255,138,91,.25); display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 12px; color: #98A1B3">Расходы · октябрь</span>
+        <span style="font-size: 18px; font-weight: 700; color: #FFA37E">−1 312,40 Br</span>
+      </div>
+    </section>
+
+    <sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
+      <section class="rise d4" aria-label="{{g.day}}" style="display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; padding: 6px 4px 0">
+          <h2 style="margin: 0; font-size: 14px; font-weight: 600">{{g.day}}</h2>
+          <span style="font-size: 13px; color: #98A1B3">{{g.total}}</span>
+        </div>
+        <sc-for list="{{g.items}}" as="it" hint-placeholder-count="3">
+          <div style="position: relative; border-radius: 18px; overflow: hidden">
+            <sc-if value="{{it.swiped}}" hint-placeholder-val="{{ false }}">
+              <div style="position: absolute; top: 0; right: 0; bottom: 0; display: flex">
+                <button style="width: 76px; border: 0; background: #6A5AF9; color: #FFFFFF; font: 600 11px Onest, system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer">
+                  <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path></svg>
+                  Повторить
+                </button>
+                <button style="width: 76px; border: 0; background: #E2574C; color: #FFFFFF; font: 600 11px Onest, system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer">
+                  <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>
+                  Удалить
+                </button>
+              </div>
+            </sc-if>
+            <div class="{{it.cls}}" style="position: relative; display: flex; align-items: center; gap: 12px; padding: 12px 14px; min-height: 44px; background: #141821; border: 1px {{it.borderStyle}} {{it.borderColor}}; border-radius: 18px; transform: {{it.tx}}">
+              <span style="width: 42px; height: 42px; border-radius: 14px; flex: none; display: grid; place-items: center; background: {{it.tileBg}}; color: {{it.col}}">
+                <svg aria-hidden="true" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="{{it.d}}"></path></svg>
+              </span>
+              <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px">
+                <span style="font-size: 15px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{it.title}}</span>
+                <span style="font-size: 12px; color: {{it.subColor}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{it.sub}}</span>
+              </span>
+              <span style="display: flex; flex-direction: column; align-items: flex-end; gap: 3px; flex: none">
+                <span style="font-size: 15px; font-weight: 600; color: {{it.amountColor}}">{{it.amount}}</span>
+                <span style="font-size: 12px; color: #98A1B3">{{it.note}}</span>
+              </span>
+            </div>
+          </div>
+        </sc-for>
+      </section>
+    </sc-for>
+  </div>
+
+  <div style="position: absolute; left: 0; right: 0; bottom: 0">
+    <dc-import name="TabBar" active="ops" theme="dark" hint-size="390px,96px"></dc-import>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1240}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { on: { month: true, exp: true } };
+  }
+  renderVals() {
+    const on = this.state.on;
+    const chipDefs = [['month', 'Октябрь'], ['acc', 'Все счета'], ['exp', 'Расходы'], ['inc', 'Доходы'], ['tag', '#отпуск']];
+    const chips = chipDefs.map(([k, label]) => ({
+      label, on: on[k] ? 'true' : 'false',
+      bg: on[k] ? 'rgba(106,90,249,.22)' : '#141821',
+      border: on[k] ? '#6A5AF9' : '#232938',
+      fg: on[k] ? '#D4CEFF' : '#98A1B3',
+      toggle: () => this.setState({ on: Object.assign({}, on, { [k]: !on[k] }) })
+    }));
+    const I = {
+      cafe: ['#FF8A5B', 'M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM17 11h1.5a2.5 2.5 0 0 1 0 5H17M8 3v3M12 3v3'],
+      food: ['#85BB65', 'M3 4h2l2.4 11h11L21 8H6.2M8 20a1.3 1.3 0 1 0 2.6 0a1.3 1.3 0 1 0-2.6 0M16 20a1.3 1.3 0 1 0 2.6 0a1.3 1.3 0 1 0-2.6 0'],
+      bus: ['#5CC8FF', 'M7 3h10a3 3 0 0 1 3 3v12H4V6a3 3 0 0 1 3-3zM4 11h16M8 21v-3M16 21v-3'],
+      phone: ['#F2C14E', 'M9.5 2.5h5a2.5 2.5 0 0 1 2.5 2.5v14a2.5 2.5 0 0 1-2.5 2.5h-5A2.5 2.5 0 0 1 7 19V5a2.5 2.5 0 0 1 2.5-2.5zM11 18.5h2'],
+      transfer: ['#9C90FF', 'M4 8h14l-3-3M20 16H6l3 3'],
+      cash: ['#85BB65', 'M3 6h18v12H3zM12 9.5a2.5 2.5 0 1 0 0 5a2.5 2.5 0 1 0 0-5'],
+      salary: ['#85BB65', 'M3 8h18v12H3zM8 8V5h8v3M3 13h18'],
+      subs: ['#F2C14E', 'M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3'],
+      wear: ['#FF7A9C', 'M8 3 3 6l2 4 2-1v12h10V9l2 1 2-4-5-3a4 4 0 0 1-8 0z']
+    };
+    const row = (k, title, sub, amount, kind, note, extra) => {
+      const [col, d] = I[k];
+      const x = extra || {};
+      return {
+        title, sub, amount, note: note || '', d, col,
+        tileBg: col + '24',
+        amountColor: kind === 'inc' ? '#A8D98A' : kind === 'tr' ? '#C3BBFF' : '#EEF1F6',
+        subColor: x.planned ? '#F2C14E' : '#98A1B3',
+        borderStyle: x.planned ? 'dashed' : 'solid',
+        borderColor: x.planned ? 'rgba(242,193,78,.55)' : '#232938',
+        swiped: !!x.swiped,
+        cls: x.swiped ? 'swipe' : '',
+        tx: x.swiped ? 'translateX(-152px)' : 'none'
+      };
+    };
+    const groups = [
+      { day: 'Сегодня, 22 октября', total: '−60,80 Br', items: [
+        row('phone', 'Мобильная связь', 'Запланировано · подтвердите', '−18,50 Br', 'exp', 'Карта', { planned: true }),
+        row('food', 'Супермаркет', 'Продукты · #дом', '−35,50 Br', 'exp', 'Карта', { swiped: true }),
+        row('cafe', 'Кофейня', 'Кафе и рестораны', '−6,80 Br', 'exp', 'Наличные')
+      ]},
+      { day: 'Вчера, 21 октября', total: '−33,60 Br', items: [
+        row('transfer', 'Карта → Депозит', 'Перевод · цель «Отпуск»', '200,00 Br', 'tr', '→ 68,52 $'),
+        row('bus', 'Проездной на месяц', 'Транспорт', '−46,00 Br', 'exp', 'Карта'),
+        row('cash', 'Кэшбэк за сентябрь', 'Доход', '+12,40 Br', 'inc', 'Карта')
+      ]},
+      { day: 'Понедельник, 20 октября', total: '+2 231,01 Br', items: [
+        row('salary', 'Зарплата', 'Доход · регулярный', '+2 400,00 Br', 'inc', 'Карта'),
+        row('subs', 'Музыкальный сервис', 'Подписки · регулярный', '−9,99 $', 'exp', '≈ 32,99 Br'),
+        row('wear', 'Куртка', 'Одежда · #осень', '−136,00 Br', 'exp', 'Кредитка')
+      ]}
+    ];
+    return { chips, groups };
+  }
+}
+</script>
+</body>
+</html>
