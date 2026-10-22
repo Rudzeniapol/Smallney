@@ -50,6 +50,10 @@ public sealed class TransactionQueries(IAppDbContext db, IValidator<TransactionF
         {
             query = query.Where(t => t.Status == status);
         }
+        else
+        {
+            query = query.Where(t => t.Status != TransactionStatus.Skipped);
+        }
 
         if (!string.IsNullOrWhiteSpace(filter.Tag))
         {

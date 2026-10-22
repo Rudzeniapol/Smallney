@@ -1,5 +1,7 @@
 using Finance.Domain.Accounts;
 using Finance.Domain.Categories;
+using Finance.Domain.Goals;
+using Finance.Domain.Recurring;
 using Finance.Domain.Transactions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -22,6 +24,15 @@ internal sealed class TransactionConfiguration : IEntityTypeConfiguration<Transa
         builder.HasOne<Account>().WithMany().HasForeignKey(t => t.AccountId).OnDelete(DeleteBehavior.Restrict);
         builder.HasOne<Account>().WithMany().HasForeignKey(t => t.ToAccountId).OnDelete(DeleteBehavior.Restrict);
         builder.HasOne<Category>().WithMany().HasForeignKey(t => t.CategoryId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne<SavingsGoal>().WithMany().HasForeignKey(t => t.SavingsGoalId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne<RecurringRule>().WithMany().HasForeignKey(t => t.RecurringRuleId).OnDelete(DeleteBehavior.Restrict);
+
+        // One transaction per rule occurrence, deleted ones included: they are tombstones for the materializer.
+        builder.HasIndex(t => new { t.RecurringRuleId, t.RecurrenceDate })
+            .IsUnique()
+            .HasFilter("recurring_rule_id IS NOT NULL")
+            .HasDatabaseName("ix_transactions_recurrence");
+        builder.HasIndex(t => t.SavingsGoalId).HasFilter("savings_goal_id IS NOT NULL");
 
         // Listing / pagination: newest first.
         builder.HasIndex(t => new { t.UserId, t.Date, t.Id })
@@ -51,6 +62,8 @@ internal sealed class TransactionConfiguration : IEntityTypeConfiguration<Transa
         {
             t.HasCheckConstraint("ck_transactions_amount_positive", "amount > 0");
             t.HasCheckConstraint("ck_transactions_to_amount_positive", "to_amount IS NULL OR to_amount > 0");
+            t.HasCheckConstraint("ck_transactions_goal_transfer", "savings_goal_id IS NULL OR type = 'Transfer'");
+            t.HasCheckConstraint("ck_transactions_recurrence", "(recurring_rule_id IS NULL) = (recurrence_date IS NULL)");
             t.HasCheckConstraint(
                 "ck_transactions_shape",
                 "(type = 'Transfer' AND to_account_id IS NOT NULL AND to_amount IS NOT NULL AND category_id IS NULL) OR " +

@@ -72,6 +72,31 @@ internal static class TransactionsEndpoints
             .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesProblem(StatusCodes.Status422UnprocessableEntity);
 
+        group.MapPost("/{id:guid}/confirm", async (Guid id, ConfirmTransactionRequest? request, TransactionWriter writer,
+                TransactionQueries queries, IAppDbContext db, CancellationToken ct) =>
+            {
+                await writer.ConfirmAsync(id, request ?? new ConfirmTransactionRequest(), ct);
+                await db.SaveChangesAsync(ct);
+                return TypedResults.Ok(await queries.GetAsync(id, ct));
+            })
+            .WithName("ConfirmTransaction")
+            .WithSummary("Planned/Skipped → Cleared, optionally with a corrected amount or date")
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict);
+
+        group.MapPost("/{id:guid}/skip", async (Guid id, TransactionWriter writer, TransactionQueries queries,
+                IAppDbContext db, CancellationToken ct) =>
+            {
+                await writer.SkipAsync(id, ct);
+                await db.SaveChangesAsync(ct);
+                return TypedResults.Ok(await queries.GetAsync(id, ct));
+            })
+            .WithName("SkipTransaction")
+            .WithSummary("Planned → Skipped (undo: update the status back to Planned)")
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict);
+
         group.MapDelete("/{id:guid}", async (Guid id, TransactionWriter writer, IAppDbContext db, CancellationToken ct) =>
             {
                 await writer.DeleteAsync(id, ct);

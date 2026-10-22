@@ -16,6 +16,9 @@ public enum TransactionStatus
 
     /// <summary>Expected (e.g. materialized from a recurring rule); does not affect balances until confirmed.</summary>
     Planned,
+
+    /// <summary>A planned occurrence the user skipped. Kept (not deleted) so it is not materialized again and can be undone.</summary>
+    Skipped,
 }
 
 public sealed class Transaction : UserOwnedEntity
@@ -44,6 +47,15 @@ public sealed class Transaction : UserOwnedEntity
 
     /// <summary>Transfer only: amount credited to the destination, in its currency.</summary>
     public long? ToAmount { get; set; }
+
+    /// <summary>Transfer only: contribution to a savings goal.</summary>
+    public Guid? SavingsGoalId { get; set; }
+
+    /// <summary>Rule this transaction was materialized from.</summary>
+    public Guid? RecurringRuleId { get; set; }
+
+    /// <summary>The rule occurrence it stands for (Date may be moved by the user, this stays).</summary>
+    public DateOnly? RecurrenceDate { get; set; }
 
     /// <summary>Signed effect on the balance of <paramref name="accountId"/>, ignoring status.</summary>
     public long BalanceEffect(Guid accountId)

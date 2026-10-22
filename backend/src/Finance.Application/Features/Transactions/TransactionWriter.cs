@@ -1,6 +1,5 @@
 using Finance.Application.Abstractions;
 using Finance.Application.Common;
-using Finance.Domain.Accounts;
 using Finance.Domain.Common;
 using Finance.Domain.Transactions;
 using FluentValidation;
@@ -13,7 +12,9 @@ public sealed class TransactionWriter(
     IAppDbContext db,
     ICurrentUser currentUser,
     TimeProvider clock,
-    IValidator<TransactionPayload> validator)
+    TransactionTemplateResolver resolver,
+    IValidator<TransactionPayload> validator,
+    IValidator<ConfirmTransactionRequest> confirmValidator)
 {
     public async Task<Transaction> CreateAsync(Guid id, TransactionPayload payload, CancellationToken ct)
     {
@@ -29,55 +30,81 @@ public sealed class TransactionWriter(
     public async Task<Transaction> UpdateAsync(Guid id, TransactionPayload payload, CancellationToken ct)
     {
         await validator.ValidateAndThrowAsync(payload, ct);
-        var transaction = await db.Transactions.FirstOrDefaultAsync(t => t.Id == id, ct)
-                          ?? throw new NotFoundException("Transaction", id);
+        var transaction = await FindAsync(id, ct);
         await ApplyAsync(transaction, payload, ct);
         return transaction;
     }
 
     public async Task DeleteAsync(Guid id, CancellationToken ct)
     {
-        var transaction = await db.Transactions.FirstOrDefaultAsync(t => t.Id == id, ct)
-                          ?? throw new NotFoundException("Transaction", id);
+        var transaction = await FindAsync(id, ct);
         transaction.MarkDeleted(clock.GetUtcNow().UtcDateTime);
     }
 
+    /// <summary>Planned or Skipped → Cleared, optionally with a corrected amount or date.</summary>
+    public async Task<Transaction> ConfirmAsync(Guid id, ConfirmTransactionRequest request, CancellationToken ct)
+    {
+        await confirmValidator.ValidateAndThrowAsync(request, ct);
+        var transaction = await FindAsync(id, ct);
+        if (transaction.Status == TransactionStatus.Cleared)
+        {
+            throw new ConflictException("transaction_not_planned", "The transaction is already cleared.");
+        }
+
+        var amount = request.Amount ?? transaction.Amount;
+        if (transaction.Type == TransactionType.Transfer)
+        {
+            var from = await db.Accounts.AsNoTracking().FirstAsync(a => a.Id == transaction.AccountId, ct);
+            var to = await db.Accounts.AsNoTracking().FirstAsync(a => a.Id == transaction.ToAccountId, ct);
+            var toAmount = request.ToAmount ?? (amount == transaction.Amount ? transaction.ToAmount : null);
+            transaction.ToAmount = TransactionRules.ResolveTransferToAmount(from, to, amount, toAmount);
+        }
+
+        transaction.Amount = amount;
+        transaction.Date = request.Date ?? transaction.Date;
+        transaction.Status = TransactionStatus.Cleared;
+        return transaction;
+    }
+
+    /// <summary>Planned → Skipped. Undo by updating the status back to Planned.</summary>
+    public async Task<Transaction> SkipAsync(Guid id, CancellationToken ct)
+    {
+        var transaction = await FindAsync(id, ct);
+        if (transaction.Status != TransactionStatus.Planned)
+        {
+            throw new ConflictException("transaction_not_planned", "Only planned transactions can be skipped.");
+        }
+
+        transaction.Status = TransactionStatus.Skipped;
+        return transaction;
+    }
+
+    private async Task<Transaction> FindAsync(Guid id, CancellationToken ct) =>
+        await db.Transactions.FirstOrDefaultAsync(t => t.Id == id, ct)
+        ?? throw new NotFoundException("Transaction", id);
+
     private async Task ApplyAsync(Transaction transaction, TransactionPayload p, CancellationToken ct)
     {
-        var type = p.Type!.Value;
-        var account = await FindAccountAsync(p.AccountId!.Value, ct);
+        var resolved = await resolver.ResolveAsync(p, ct);
 
-        Guid? categoryId = null;
-        Guid? toAccountId = null;
-        long? toAmount = null;
-
-        if (type == TransactionType.Transfer)
+        if (p.RecurringRuleId is { } ruleId
+            && !await db.RecurringRules.IgnoreQueryFilters([QueryFilters.SoftDelete]).AnyAsync(r => r.Id == ruleId, ct))
         {
-            var toAccount = await FindAccountAsync(p.ToAccountId!.Value, ct);
-            toAmount = TransactionRules.ResolveTransferToAmount(account, toAccount, p.Amount, p.ToAmount);
-            toAccountId = toAccount.Id;
-        }
-        else
-        {
-            var category = await db.Categories.AsNoTracking().FirstOrDefaultAsync(c => c.Id == p.CategoryId, ct)
-                           ?? throw new DomainException("category_not_found", $"Category '{p.CategoryId}' was not found.");
-            TransactionRules.EnsureCategoryMatches(type, category);
-            categoryId = category.Id;
+            throw new DomainException("recurring_rule_not_found", $"Recurring rule '{ruleId}' was not found.");
         }
 
-        transaction.AccountId = account.Id;
-        transaction.Type = type;
+        transaction.AccountId = resolved.Account.Id;
+        transaction.Type = resolved.Type;
         transaction.Amount = p.Amount;
-        transaction.CategoryId = categoryId;
+        transaction.CategoryId = resolved.CategoryId;
         transaction.Date = p.Date!.Value;
         transaction.Note = string.IsNullOrWhiteSpace(p.Note) ? null : p.Note.Trim();
         transaction.Tags = TransactionRules.NormalizeTags(p.Tags);
         transaction.Status = p.Status ?? TransactionStatus.Cleared;
-        transaction.ToAccountId = toAccountId;
-        transaction.ToAmount = toAmount;
+        transaction.ToAccountId = resolved.ToAccountId;
+        transaction.ToAmount = resolved.ToAmount;
+        transaction.SavingsGoalId = resolved.SavingsGoalId;
+        transaction.RecurringRuleId = p.RecurringRuleId;
+        transaction.RecurrenceDate = p.RecurrenceDate;
     }
-
-    private async Task<Account> FindAccountAsync(Guid id, CancellationToken ct) =>
-        await db.Accounts.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id, ct)
-        ?? throw new DomainException("account_not_found", $"Account '{id}' was not found.");
 }

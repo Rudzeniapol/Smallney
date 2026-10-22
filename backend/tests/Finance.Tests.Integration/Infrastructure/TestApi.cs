@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Finance.Application.Abstractions;
 using Finance.Application.Features.Accounts;
 using Finance.Application.Features.Auth;
 using Finance.Application.Features.Categories;
@@ -10,8 +11,13 @@ using Finance.Application.Features.Transactions;
 using Finance.Domain.Accounts;
 using Finance.Domain.Categories;
 using Finance.Domain.Common;
+using Finance.Domain.ExchangeRates;
 using Finance.Domain.Transactions;
+using Finance.Domain.Users;
+using Finance.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Finance.Tests.Integration.Infrastructure;
 
@@ -95,6 +101,9 @@ public sealed class TestUser(HttpClient client, AuthResponse auth, string email,
             Status = payload.Status,
             ToAccountId = payload.ToAccountId,
             ToAmount = payload.ToAmount,
+            SavingsGoalId = payload.SavingsGoalId,
+            RecurringRuleId = payload.RecurringRuleId,
+            RecurrenceDate = payload.RecurrenceDate,
         });
 
     public async Task<TransactionResponse> ExpenseAsync(Guid accountId, long amount, DateOnly date, string category = "Продукты",
@@ -130,6 +139,32 @@ public sealed class TestUser(HttpClient client, AuthResponse auth, string email,
 
 public static class TestApiExtensions
 {
+    /// <summary>
+    /// Global rates used by tests that convert currencies. Every test seeds the same values, so parallel tests
+    /// agree: USD = 3.0 BYN and EUR = 3.5 BYN, with no other USD/EUR rates in the database.
+    /// </summary>
+    public static async Task SeedStandardRatesAsync(this ApiFactory factory)
+    {
+        var date = new DateOnly(2026, 10, 20);
+        await using var scope = factory.Services.CreateAsyncScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        await db.Database.ExecuteSqlRawAsync(
+            "INSERT INTO exchange_rates (from_currency, to_currency, date, rate, source, fetched_at) VALUES " +
+            "('USD', 'BYN', {0}, 3.0, 'TEST', now()), ('EUR', 'BYN', {0}, 3.5, 'TEST', now()) ON CONFLICT DO NOTHING",
+            date);
+        scope.ServiceProvider.GetRequiredService<IExchangeRateProvider>().Invalidate();
+    }
+
+    /// <summary>Runs <paramref name="action"/> in a scope without an HTTP user, like a background job.</summary>
+    public static async Task<T> InJobScopeAsync<T>(this ApiFactory factory, Func<IServiceProvider, Task<T>> action)
+    {
+        await using var scope = factory.Services.CreateAsyncScope();
+        return await action(scope.ServiceProvider);
+    }
+
+    /// <summary>The user's current local date, as the server computes it.</summary>
+    public static DateOnly TodayFor(string timezone = User.DefaultTimezone) => UserClock.LocalDate(timezone, DateTimeOffset.UtcNow);
+
     public static async Task<TestUser> RegisterUserAsync(this ApiFactory factory, RegisterRequest? request = null)
     {
         var email = request?.Email ?? $"user-{Guid.NewGuid():N}@test.by";

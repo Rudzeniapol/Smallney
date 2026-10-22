@@ -1,6 +1,9 @@
 using Finance.Domain.Accounts;
+using Finance.Domain.Budgets;
 using Finance.Domain.Categories;
 using Finance.Domain.ExchangeRates;
+using Finance.Domain.Goals;
+using Finance.Domain.Recurring;
 using Finance.Domain.Transactions;
 using Finance.Domain.Users;
 using Microsoft.EntityFrameworkCore;
@@ -24,11 +27,27 @@ public interface IAppDbContext
 
     DbSet<Transaction> Transactions { get; }
 
+    DbSet<RecurringRule> RecurringRules { get; }
+
+    DbSet<Budget> Budgets { get; }
+
+    DbSet<BudgetLine> BudgetLines { get; }
+
+    DbSet<BudgetGoalAllocation> BudgetGoalAllocations { get; }
+
+    DbSet<SavingsGoal> SavingsGoals { get; }
+
     DbSet<ExchangeRate> ExchangeRates { get; }
 
     DatabaseFacade Database { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Takes the per-user write lock for the current database transaction (re-entrant; SaveChanges takes the same one).
+    /// Use it to make a read-check-write sequence atomic per user.
+    /// </summary>
+    Task LockUserAsync(Guid userId, CancellationToken cancellationToken = default);
 }
 
 public static class QueryFilters

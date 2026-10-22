@@ -3,7 +3,8 @@
 Учёт личных финансов: backend на .NET 10 + PostgreSQL 17 и мобильный клиент на Flutter (offline-first).
 Встроенного ИИ нет: категоризация, бюджеты и прогнозы считаются по правилам и формулам.
 
-> Статус: **фаза 1 из 9** — каркас бэкенда, auth, деньги и курсы НБРБ, счета, категории, транзакции.
+> Статус: **фаза 2 из 9** — каркас бэкенда, auth, деньги и курсы НБРБ, счета, категории, транзакции;
+> регулярные платежи, бюджеты месяца, цели накоплений.
 > План фаз и принятые решения: [`docs/decisions.md`](docs/decisions.md). Дизайн мобильного приложения: [`design/`](design/DESIGN.md).
 
 ## Структура
@@ -35,6 +36,24 @@ curl http://localhost:5080/health    # → Healthy
 - Hangfire Dashboard: http://localhost:5080/hangfire
 
 При первом старте API применяет миграции и загружает курсы НБРБ за сегодня и за 30 предыдущих дней.
+Фоновые задачи Hangfire: `exchange-rates` (курсы, каждые 6 часов) и `recurring-transactions`
+(запланированные платежи из регулярных правил, каждый час).
+
+### Основные эндпоинты (`/api/v1`)
+
+| Группа | Что делает |
+|---|---|
+| `auth/register`, `auth/login`, `auth/refresh`, `auth/logout` | вход, ротация refresh-токена |
+| `me` | профиль и настройки (PATCH — JSON Merge Patch) |
+| `accounts`, `accounts/summary` | счета с вычисленными балансами, капитал в базовой валюте |
+| `categories` | категории, два уровня |
+| `transactions`, `transactions/{id}/confirm`, `transactions/{id}/skip` | операции, подтверждение и пропуск запланированных |
+| `recurring-rules`, `recurring-rules/occurrences` | регулярные платежи и их вхождения за период |
+| `budgets/{yyyy-MM}`, `…/summary`, `…/template`, `…/copy-from-previous` | бюджет месяца, план и факт |
+| `savings-goals` | цели с прогрессом и рекомендуемым взносом |
+| `rates` | курсы НБРБ |
+
+Полное описание — в Scalar.
 
 Запуск API из исходников (БД из docker compose):
 

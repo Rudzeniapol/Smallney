@@ -1,4 +1,5 @@
 using Finance.Infrastructure.ExchangeRates;
+using Finance.Infrastructure.Recurring;
 using Hangfire;
 using Hangfire.Dashboard;
 using Hangfire.PostgreSql;
@@ -14,6 +15,10 @@ namespace Finance.Infrastructure.Jobs;
 public static class JobsSetup
 {
     public const string ExchangeRatesJobId = "exchange-rates";
+    public const string RecurringTransactionsJobId = "recurring-transactions";
+
+    /// <summary>Hourly, because "today" differs between users' time zones.</summary>
+    public const string RecurringTransactionsCron = "5 * * * *";
 
     internal static IServiceCollection AddJobs(this IServiceCollection services)
     {
@@ -46,7 +51,7 @@ public static class JobsSetup
     }
 }
 
-/// <summary>Registers recurring jobs and kicks off the initial rate import.</summary>
+/// <summary>Registers recurring jobs and kicks off the initial rate import and materialization.</summary>
 internal sealed class JobsBootstrapper(
     IRecurringJobManager recurringJobs,
     IBackgroundJobClient jobs,
@@ -60,6 +65,12 @@ internal sealed class JobsBootstrapper(
             JobsSetup.ExchangeRatesJobId,
             job => job.LoadLatestAsync(CancellationToken.None),
             options.Value.Cron);
+
+        recurringJobs.AddOrUpdate<RecurringTransactionsJob>(
+            JobsSetup.RecurringTransactionsJobId,
+            job => job.RunAsync(CancellationToken.None),
+            JobsSetup.RecurringTransactionsCron);
+        jobs.Enqueue<RecurringTransactionsJob>(job => job.RunAsync(CancellationToken.None));
 
         await using var scope = scopes.CreateAsyncScope();
         if (!await scope.ServiceProvider.GetRequiredService<ExchangeRatesJob>().HasRatesForTodayAsync(cancellationToken))

@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace Finance.Application.Features.Transactions;
 
-public record TransactionPayload
+public record TransactionPayload : ITransactionTemplate
 {
     public Guid? AccountId { get; init; }
 
@@ -30,6 +30,14 @@ public record TransactionPayload
 
     /// <summary>Transfer only, minor units of the destination currency. Defaults to Amount for the same currency.</summary>
     public long? ToAmount { get; init; }
+
+    /// <summary>Transfer only: marks the transfer as a contribution to a savings goal.</summary>
+    public Guid? SavingsGoalId { get; init; }
+
+    /// <summary>Set together with <see cref="RecurrenceDate"/> when the transaction stands for a rule occurrence.</summary>
+    public Guid? RecurringRuleId { get; init; }
+
+    public DateOnly? RecurrenceDate { get; init; }
 }
 
 public sealed record CreateTransactionRequest : TransactionPayload
@@ -50,13 +58,27 @@ public sealed record TransactionResponse(
     TransactionStatus Status,
     Guid? ToAccountId,
     long? ToAmount,
+    Guid? SavingsGoalId,
+    Guid? RecurringRuleId,
+    DateOnly? RecurrenceDate,
     long Version,
     DateTime CreatedAt,
     DateTime UpdatedAt)
 {
     public static TransactionResponse From(Transaction t) => new(
         t.Id, t.AccountId, t.Type, t.Amount, t.CategoryId, t.Date, t.Note, t.Tags, t.Status, t.ToAccountId, t.ToAmount,
-        t.Version, t.CreatedAt, t.UpdatedAt);
+        t.SavingsGoalId, t.RecurringRuleId, t.RecurrenceDate, t.Version, t.CreatedAt, t.UpdatedAt);
+}
+
+/// <summary>Turns a Planned (or Skipped) transaction into a Cleared one, optionally adjusting it.</summary>
+public sealed record ConfirmTransactionRequest
+{
+    public long? Amount { get; init; }
+
+    /// <summary>For transfers between currencies when the amount changes.</summary>
+    public long? ToAmount { get; init; }
+
+    public DateOnly? Date { get; init; }
 }
 
 public sealed record TransactionFilter
@@ -90,33 +112,23 @@ internal sealed class TransactionPayloadValidator : AbstractValidator<Transactio
 {
     public TransactionPayloadValidator()
     {
-        RuleFor(x => x.AccountId).NotNull();
-        RuleFor(x => x.Type).NotNull().IsInEnum();
-        RuleFor(x => x.Amount).GreaterThan(0);
+        Include(new TransactionTemplateValidator<TransactionPayload>());
         RuleFor(x => x.Date).NotNull().IsSaneDate();
-        RuleFor(x => x.Note).MaximumLength(TransactionRules.MaxNoteLength);
         RuleFor(x => x.Status).IsInEnum();
-        RuleFor(x => x.Tags).Must(t => t is null || t.Count <= TransactionRules.MaxTags)
-            .WithMessage($"At most {TransactionRules.MaxTags} tags are allowed.");
-        RuleForEach(x => x.Tags).NotEmpty().MaximumLength(TransactionRules.MaxTagLength);
+        RuleFor(x => x.RecurrenceDate).NotNull().When(x => x.RecurringRuleId is not null)
+            .WithMessage("recurrenceDate is required together with recurringRuleId.");
+        RuleFor(x => x.RecurrenceDate).Null().When(x => x.RecurringRuleId is null)
+            .WithMessage("recurrenceDate is only allowed together with recurringRuleId.");
+    }
+}
 
-        When(x => x.Type == TransactionType.Transfer, () =>
-        {
-            RuleFor(x => x.CategoryId).Null().WithErrorCode("category_not_allowed")
-                .WithMessage("Transfers do not have a category.");
-            RuleFor(x => x.ToAccountId).NotNull()
-                .NotEqual(x => x.AccountId).WithErrorCode("transfer_same_account")
-                .WithMessage("A transfer needs two different accounts.");
-            RuleFor(x => x.ToAmount).GreaterThan(0).When(x => x.ToAmount is not null);
-        }).Otherwise(() =>
-        {
-            RuleFor(x => x.CategoryId).NotNull().WithErrorCode("category_required")
-                .WithMessage("Income and expense transactions need a category.");
-            RuleFor(x => x.ToAccountId).Null().WithErrorCode("transfer_fields_not_allowed")
-                .WithMessage("Only transfers have a destination account.");
-            RuleFor(x => x.ToAmount).Null().WithErrorCode("transfer_fields_not_allowed")
-                .WithMessage("Only transfers have a destination amount.");
-        });
+internal sealed class ConfirmTransactionRequestValidator : AbstractValidator<ConfirmTransactionRequest>
+{
+    public ConfirmTransactionRequestValidator()
+    {
+        RuleFor(x => x.Amount).GreaterThan(0).When(x => x.Amount is not null);
+        RuleFor(x => x.ToAmount).GreaterThan(0).When(x => x.ToAmount is not null);
+        RuleFor(x => x.Date).IsSaneDate();
     }
 }
 

@@ -1,9 +1,12 @@
 using System.Reflection;
 using Finance.Application.Abstractions;
 using Finance.Domain.Accounts;
+using Finance.Domain.Budgets;
 using Finance.Domain.Categories;
 using Finance.Domain.Common;
 using Finance.Domain.ExchangeRates;
+using Finance.Domain.Goals;
+using Finance.Domain.Recurring;
 using Finance.Domain.Transactions;
 using Finance.Domain.Users;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +36,16 @@ public sealed class AppDbContext(
     public DbSet<Category> Categories => Set<Category>();
 
     public DbSet<Transaction> Transactions => Set<Transaction>();
+
+    public DbSet<RecurringRule> RecurringRules => Set<RecurringRule>();
+
+    public DbSet<Budget> Budgets => Set<Budget>();
+
+    public DbSet<BudgetLine> BudgetLines => Set<BudgetLine>();
+
+    public DbSet<BudgetGoalAllocation> BudgetGoalAllocations => Set<BudgetGoalAllocation>();
+
+    public DbSet<SavingsGoal> SavingsGoals => Set<SavingsGoal>();
 
     public DbSet<ExchangeRate> ExchangeRates => Set<ExchangeRate>();
 
@@ -106,8 +119,7 @@ public sealed class AppDbContext(
         {
             foreach (var userId in owned.Select(e => e.Entity.UserId).Distinct().Order())
             {
-                var key = AdvisoryLockKey(userId);
-                await Database.ExecuteSqlAsync($"SELECT pg_advisory_xact_lock({key})", cancellationToken);
+                await LockUserAsync(userId, cancellationToken);
             }
 
             var versions = await Database
@@ -136,6 +148,17 @@ public sealed class AppDbContext(
                 await ownTransaction.DisposeAsync();
             }
         }
+    }
+
+    public async Task LockUserAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        if (Database.CurrentTransaction is null)
+        {
+            throw new InvalidOperationException("The user lock is transaction-scoped; begin a transaction first.");
+        }
+
+        var key = AdvisoryLockKey(userId);
+        await Database.ExecuteSqlAsync($"SELECT pg_advisory_xact_lock({key})", cancellationToken);
     }
 
     private static long AdvisoryLockKey(Guid userId)

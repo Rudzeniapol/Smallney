@@ -63,6 +63,9 @@ try
         .MapAccounts()
         .MapCategories()
         .MapTransactions()
+        .MapRecurringRules()
+        .MapBudgets()
+        .MapSavingsGoals()
         .MapRates();
 
     if (app.Configuration.GetValue("Database:MigrateOnStartup", true))

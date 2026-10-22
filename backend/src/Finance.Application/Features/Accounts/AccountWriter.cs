@@ -55,7 +55,19 @@ public sealed class AccountWriter(
                 "The account has transactions. Delete them first or archive the account.");
         }
 
+        if (await db.RecurringRules.AnyAsync(r => r.AccountId == id || r.ToAccountId == id, ct))
+        {
+            throw new ConflictException(
+                "account_has_recurring_rules",
+                "Recurring rules use the account. Change or delete them first.");
+        }
+
         account.MarkDeleted(clock.GetUtcNow().UtcDateTime);
+
+        foreach (var goal in await db.SavingsGoals.Where(g => g.LinkedAccountId == id).ToListAsync(ct))
+        {
+            goal.LinkedAccountId = null;
+        }
 
         var userId = currentUser.RequiredUserId();
         var user = await db.Users.FirstAsync(u => u.Id == userId, ct);

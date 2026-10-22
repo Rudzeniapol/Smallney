@@ -1,9 +1,13 @@
 using System.Text.Json;
+using Finance.Application.Common;
 using Finance.Application.Features.Accounts;
 using Finance.Application.Features.Auth;
+using Finance.Application.Features.Budgets;
 using Finance.Application.Features.Categories;
+using Finance.Application.Features.Goals;
 using Finance.Application.Features.Me;
 using Finance.Application.Features.Rates;
+using Finance.Application.Features.Recurring;
 using Finance.Application.Features.Transactions;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,6 +35,16 @@ public static class DependencyInjection
         services.AddScoped<TransactionWriter>();
         services.AddScoped<TransactionQueries>();
         services.AddScoped<RatesQueries>();
+        services.AddScoped<TransactionTemplateResolver>();
+        services.AddScoped<SpendingQueries>();
+        services.AddScoped<RecurringRuleWriter>();
+        services.AddScoped<RecurringQueries>();
+        services.AddScoped<RecurringMaterializer>();
+        services.AddScoped<GoalWriter>();
+        services.AddScoped<GoalQueries>();
+        services.AddScoped<BudgetWriter>();
+        services.AddScoped<BudgetQueries>();
+        services.AddScoped<BudgetSummaryService>();
         return services;
     }
 }

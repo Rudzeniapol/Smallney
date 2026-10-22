@@ -1,16 +1,11 @@
 using System.Net;
-using Finance.Application.Abstractions;
 using Finance.Application.Features.Accounts;
 using Finance.Application.Features.Me;
 using Finance.Application.Features.Transactions;
 using Finance.Domain.Accounts;
 using Finance.Domain.Common;
-using Finance.Domain.ExchangeRates;
 using Finance.Domain.Transactions;
-using Finance.Infrastructure.Persistence;
 using Finance.Tests.Integration.Infrastructure;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Finance.Tests.Integration.Features;
 
@@ -182,7 +177,7 @@ public class AccountsTests(ApiFactory factory)
     [Fact]
     public async Task Summary_converts_balances_to_the_base_currency()
     {
-        await SeedRatesAsync(new DateOnly(2026, 10, 20), ("USD", 3.0m), ("EUR", 3.5m));
+        await factory.SeedStandardRatesAsync();
         var user = await factory.RegisterUserAsync();
         await user.CreateAccountAsync("BYN", "BYN", 10_000);
         await user.CreateAccountAsync("USD", "USD", 10_000);
@@ -196,21 +191,5 @@ public class AccountsTests(ApiFactory factory)
         summary.Total.Currency.Should().Be("BYN");
         summary.Total.Amount.Should().Be(10_000 + 30_000);
         summary.Accounts.Should().HaveCount(2).And.NotContain(a => a.AccountId == excluded.Id);
-    }
-
-    private async Task SeedRatesAsync(DateOnly date, params (string Currency, decimal Rate)[] rates)
-    {
-        await using var scope = factory.Services.CreateAsyncScope();
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        foreach (var (currency, rate) in rates)
-        {
-            if (!await db.ExchangeRates.AnyAsync(r => r.FromCurrency == currency && r.Date == date))
-            {
-                db.ExchangeRates.Add(new ExchangeRate { Date = date, FromCurrency = currency, Rate = rate, FetchedAt = DateTime.UtcNow });
-            }
-        }
-
-        await db.SaveChangesAsync();
-        scope.ServiceProvider.GetRequiredService<IExchangeRateProvider>().Invalidate();
     }
 }

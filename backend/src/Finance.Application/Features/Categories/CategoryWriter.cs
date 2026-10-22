@@ -35,11 +35,13 @@ public sealed class CategoryWriter(
         var hasChildren = await db.Categories.AnyAsync(c => c.ParentId == id, ct);
         if (payload.Kind != category.Kind)
         {
-            if (category.SystemCode is not null || hasChildren || await HasTransactionsAsync(id, ct))
+            if (category.SystemCode is not null || hasChildren || await HasTransactionsAsync(id, ct)
+                || await db.RecurringRules.AnyAsync(r => r.CategoryId == id, ct)
+                || await db.BudgetLines.AnyAsync(l => l.CategoryId == id, ct))
             {
                 throw new ConflictException(
                     "category_kind_locked",
-                    "The kind of a built-in category, or of one with subcategories or transactions, cannot be changed.");
+                    "The kind of a built-in category, or of one that has subcategories, transactions, rules or budget lines, cannot be changed.");
             }
         }
 
@@ -75,6 +77,20 @@ public sealed class CategoryWriter(
             throw new ConflictException(
                 "category_has_transactions",
                 "The category has transactions. Recategorize them or archive the category.");
+        }
+
+        if (await db.RecurringRules.AnyAsync(r => r.CategoryId == id, ct))
+        {
+            throw new ConflictException(
+                "category_has_recurring_rules",
+                "Recurring rules use the category. Change or delete them first.");
+        }
+
+        if (await db.BudgetLines.AnyAsync(l => l.CategoryId == id, ct))
+        {
+            throw new ConflictException(
+                "category_in_budget",
+                "Budget lines use the category. Remove them from the budgets or archive the category.");
         }
 
         category.MarkDeleted(clock.GetUtcNow().UtcDateTime);
