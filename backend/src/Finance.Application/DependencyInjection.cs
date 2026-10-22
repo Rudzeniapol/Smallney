@@ -1,9 +1,11 @@
 using System.Text.Json;
 using Finance.Application.Common;
 using Finance.Application.Features.Accounts;
+using Finance.Application.Features.Analytics;
 using Finance.Application.Features.Auth;
 using Finance.Application.Features.Budgets;
 using Finance.Application.Features.Categories;
+using Finance.Application.Features.Forecast;
 using Finance.Application.Features.Goals;
 using Finance.Application.Features.Me;
 using Finance.Application.Features.Rates;
@@ -45,6 +47,8 @@ public static class DependencyInjection
         services.AddScoped<BudgetWriter>();
         services.AddScoped<BudgetQueries>();
         services.AddScoped<BudgetSummaryService>();
+        services.AddScoped<ForecastService>();
+        services.AddScoped<AnalyticsService>();
         return services;
     }
 }

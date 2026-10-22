@@ -7,7 +7,10 @@ using Microsoft.EntityFrameworkCore;
 namespace Finance.Application.Common;
 
 /// <summary>Cleared income/expense pre-aggregated per (category, type, account currency, date).</summary>
-public sealed record FlowRow(Guid CategoryId, TransactionType Type, string Currency, DateOnly Date, long Amount);
+public sealed record FlowRow(Guid CategoryId, TransactionType Type, string Currency, DateOnly Date, long Amount)
+{
+    public Money Money => new(Amount, Domain.Monetary.Currency.FromCode(Currency));
+}
 
 /// <summary>A cleared transfer into a goal, in the destination account currency.</summary>
 public sealed record GoalContributionRow(Guid GoalId, string Currency, DateOnly Date, long Amount);
@@ -18,16 +21,22 @@ public sealed record GoalContributionRow(Guid GoalId, string Currency, DateOnly 
 /// </summary>
 public sealed class SpendingQueries(IAppDbContext db, IExchangeRateProvider rates)
 {
-    public async Task<IReadOnlyList<FlowRow>> FlowsAsync(DateOnly start, DateOnly end, CancellationToken ct) =>
+    /// <param name="excludeRecurring">Leave out transactions materialized from recurring rules (the forecast simulates those).</param>
+    public async Task<IReadOnlyList<FlowRow>> FlowsAsync(DateOnly start, DateOnly end, CancellationToken ct, bool excludeRecurring = false) =>
         await (
                 from t in db.Transactions
                 join a in db.Accounts on t.AccountId equals a.Id
                 where t.Status == TransactionStatus.Cleared
                       && t.Type != TransactionType.Transfer
                       && t.Date >= start && t.Date <= end
+                      && (!excludeRecurring || t.RecurringRuleId == null)
                 group t by new { CategoryId = t.CategoryId!.Value, t.Type, a.Currency, t.Date } into g
                 select new FlowRow(g.Key.CategoryId, g.Key.Type, g.Key.Currency, g.Key.Date, g.Sum(x => x.Amount)))
             .ToListAsync(ct);
+
+    /// <summary>Date of the user's first cleared transaction, if any.</summary>
+    public Task<DateOnly?> FirstActivityAsync(CancellationToken ct) =>
+        db.Transactions.Where(t => t.Status == TransactionStatus.Cleared).MinAsync(t => (DateOnly?)t.Date, ct);
 
     public async Task<IReadOnlyList<GoalContributionRow>> GoalContributionsAsync(CancellationToken ct) =>
         await (

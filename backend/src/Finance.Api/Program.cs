@@ -66,6 +66,8 @@ try
         .MapRecurringRules()
         .MapBudgets()
         .MapSavingsGoals()
+        .MapForecast()
+        .MapAnalytics()
         .MapRates();
 
     if (app.Configuration.GetValue("Database:MigrateOnStartup", true))
