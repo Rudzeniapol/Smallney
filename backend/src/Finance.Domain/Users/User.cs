@@ -3,7 +3,7 @@ using Finance.Domain.Monetary;
 
 namespace Finance.Domain.Users;
 
-public sealed class User : IHasTimestamps
+public sealed class User : IHasTimestamps, IVersioned
 {
     public const int MinFirstDayOfMonth = 1;
     public const int MaxFirstDayOfMonth = 28;
@@ -31,6 +31,11 @@ public sealed class User : IHasTimestamps
 
     /// <summary>Forecast alert threshold in minor units of the base currency (alert when balance &lt; threshold).</summary>
     public long LowBalanceThreshold { get; set; }
+
+    /// <summary>Version of the settings in the sync stream (entity type "settings").</summary>
+    public long Version { get; set; }
+
+    Guid IVersioned.VersionOwnerId => Id;
 
     public DateTime CreatedAt { get; set; }
 

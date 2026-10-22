@@ -32,6 +32,7 @@ public static class DependencyInjection
         services.AddScoped<ICurrencyConverter, CurrencyConverter>();
         services.AddScoped<ExchangeRatesJob>();
         services.AddScoped<Recurring.RecurringTransactionsJob>();
+        services.AddScoped<Sync.SyncLogCleanupJob>();
         services.AddHttpClient<INbrbClient, NbrbClient>((sp, http) =>
         {
             http.BaseAddress = new Uri(sp.GetRequiredService<IOptions<ExchangeRatesOptions>>().Value.NbrbBaseUrl);

@@ -68,6 +68,7 @@ try
         .MapSavingsGoals()
         .MapForecast()
         .MapAnalytics()
+        .MapSync()
         .MapRates();
 
     if (app.Configuration.GetValue("Database:MigrateOnStartup", true))

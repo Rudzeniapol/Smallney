@@ -25,6 +25,12 @@ public sealed record CreateCategoryRequest : CategoryPayload
     public Guid? Id { get; init; }
 }
 
+/// <summary>A category as pulled; <see cref="SystemCode"/> is read-only.</summary>
+public sealed record CategorySyncData : CategoryPayload
+{
+    public string? SystemCode { get; init; }
+}
+
 public sealed record CategoryResponse(
     Guid Id,
     string Name,

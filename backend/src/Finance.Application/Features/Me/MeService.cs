@@ -7,7 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Finance.Application.Features.Me;
 
-public sealed class MeService(IAppDbContext db, ICurrentUser currentUser, IValidator<UpdateMeRequest> validator)
+public sealed class MeService(
+    IAppDbContext db,
+    ICurrentUser currentUser,
+    IValidator<UpdateMeRequest> validator,
+    IValidator<SettingsPayload> settingsValidator)
 {
     public async Task<User> GetUserAsync(CancellationToken ct)
     {
@@ -57,6 +61,24 @@ public sealed class MeService(IAppDbContext db, ICurrentUser currentUser, IValid
 
         await db.SaveChangesAsync(ct);
         return MeResponse.From(user);
+    }
+
+    /// <summary>Replaces all settings (sync). Does not call SaveChanges.</summary>
+    public async Task<User> ReplaceSettingsAsync(SettingsPayload settings, CancellationToken ct)
+    {
+        await settingsValidator.ValidateAndThrowAsync(settings, ct);
+        var user = await GetUserAsync(ct);
+        if (settings.DefaultSpendingAccountId is { } accountId && !await db.Accounts.AnyAsync(a => a.Id == accountId, ct))
+        {
+            throw new Domain.Common.DomainException("account_not_found", $"Account '{accountId}' was not found.");
+        }
+
+        user.BaseCurrency = settings.BaseCurrency!.Trim().ToUpperInvariant();
+        user.Timezone = settings.Timezone!;
+        user.FirstDayOfMonth = settings.FirstDayOfMonth;
+        user.DefaultSpendingAccountId = settings.DefaultSpendingAccountId;
+        user.LowBalanceThreshold = settings.LowBalanceThreshold;
+        return user;
     }
 
     private static T Required<T>(T? value, string property)

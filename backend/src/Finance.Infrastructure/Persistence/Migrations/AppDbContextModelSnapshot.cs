@@ -640,6 +640,55 @@ namespace Finance.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Finance.Domain.Sync.SyncChangeLog", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<Guid>("EntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("entity_id");
+
+                    b.Property<DateTime>("ClientUpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("client_updated_at");
+
+                    b.Property<string>("EntityType")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("entity_type");
+
+                    b.Property<string>("Operation")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("operation");
+
+                    b.Property<DateTime>("ProcessedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("processed_at");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("status");
+
+                    b.Property<long?>("Version")
+                        .HasColumnType("bigint")
+                        .HasColumnName("version");
+
+                    b.HasKey("UserId", "EntityId", "ClientUpdatedAt")
+                        .HasName("pk_sync_change_logs");
+
+                    b.HasIndex("ProcessedAt")
+                        .HasDatabaseName("ix_sync_change_logs_processed_at");
+
+                    b.ToTable("sync_change_logs", (string)null);
+                });
+
             modelBuilder.Entity("Finance.Domain.Transactions.Transaction", b =>
                 {
                     b.Property<Guid>("Id")
@@ -891,6 +940,10 @@ namespace Finance.Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
+                    b.Property<long>("Version")
+                        .HasColumnType("bigint")
+                        .HasColumnName("version");
+
                     b.HasKey("Id")
                         .HasName("pk_users");
 
@@ -1037,6 +1090,16 @@ namespace Finance.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_recurring_rules_users_user_id");
+                });
+
+            modelBuilder.Entity("Finance.Domain.Sync.SyncChangeLog", b =>
+                {
+                    b.HasOne("Finance.Domain.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_sync_change_logs_users_user_id");
                 });
 
             modelBuilder.Entity("Finance.Domain.Transactions.Transaction", b =>

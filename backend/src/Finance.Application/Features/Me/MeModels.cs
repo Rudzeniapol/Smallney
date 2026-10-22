@@ -43,6 +43,48 @@ public sealed record UpdateMeRequest
     public long? LowBalanceThreshold { get; init; }
 }
 
+/// <summary>All settings at once: the "settings" entity of the sync stream (id = user id).</summary>
+public record SettingsPayload
+{
+    public string? BaseCurrency { get; init; }
+
+    public string? Timezone { get; init; }
+
+    public int FirstDayOfMonth { get; init; } = User.MinFirstDayOfMonth;
+
+    public Guid? DefaultSpendingAccountId { get; init; }
+
+    public long LowBalanceThreshold { get; init; }
+}
+
+/// <summary>Settings as pulled; <see cref="Email"/> is read-only.</summary>
+public sealed record SettingsSyncData : SettingsPayload
+{
+    public string? Email { get; init; }
+
+    public static SettingsSyncData From(User user) => new()
+    {
+        Email = user.Email,
+        BaseCurrency = user.BaseCurrency,
+        Timezone = user.Timezone,
+        FirstDayOfMonth = user.FirstDayOfMonth,
+        DefaultSpendingAccountId = user.DefaultSpendingAccountId,
+        LowBalanceThreshold = user.LowBalanceThreshold,
+    };
+}
+
+internal sealed class SettingsPayloadValidator : AbstractValidator<SettingsPayload>
+{
+    public SettingsPayloadValidator()
+    {
+        RuleFor(x => x.BaseCurrency).NotEmpty().IsCurrencyCode();
+        RuleFor(x => x.Timezone).NotEmpty()
+            .Must(UserClock.IsValidTimezone).WithErrorCode("invalid_timezone").WithMessage("Unknown IANA time zone.");
+        RuleFor(x => x.FirstDayOfMonth).InclusiveBetween(User.MinFirstDayOfMonth, User.MaxFirstDayOfMonth);
+        RuleFor(x => x.LowBalanceThreshold).GreaterThanOrEqualTo(0);
+    }
+}
+
 internal sealed class UpdateMeRequestValidator : AbstractValidator<UpdateMeRequest>
 {
     public UpdateMeRequestValidator()

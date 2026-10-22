@@ -4,6 +4,7 @@ using Finance.Domain.Categories;
 using Finance.Domain.ExchangeRates;
 using Finance.Domain.Goals;
 using Finance.Domain.Recurring;
+using Finance.Domain.Sync;
 using Finance.Domain.Transactions;
 using Finance.Domain.Users;
 using Microsoft.EntityFrameworkCore;
@@ -39,7 +40,12 @@ public interface IAppDbContext
 
     DbSet<ExchangeRate> ExchangeRates { get; }
 
+    DbSet<SyncChangeLog> SyncChangeLogs { get; }
+
     DatabaseFacade Database { get; }
+
+    /// <summary>Used by sync to drop the state of a rejected change.</summary>
+    Microsoft.EntityFrameworkCore.ChangeTracking.ChangeTracker ChangeTracker { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 

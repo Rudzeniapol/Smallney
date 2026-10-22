@@ -10,6 +10,7 @@ using Finance.Application.Features.Goals;
 using Finance.Application.Features.Me;
 using Finance.Application.Features.Rates;
 using Finance.Application.Features.Recurring;
+using Finance.Application.Features.Sync;
 using Finance.Application.Features.Transactions;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,6 +50,9 @@ public static class DependencyInjection
         services.AddScoped<BudgetSummaryService>();
         services.AddScoped<ForecastService>();
         services.AddScoped<AnalyticsService>();
+        services.AddScoped<BudgetPartsWriter>();
+        services.AddScoped<SyncHandlers>();
+        services.AddScoped<SyncService>();
         return services;
     }
 }

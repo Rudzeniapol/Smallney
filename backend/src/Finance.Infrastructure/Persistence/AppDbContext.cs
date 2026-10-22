@@ -7,6 +7,7 @@ using Finance.Domain.Common;
 using Finance.Domain.ExchangeRates;
 using Finance.Domain.Goals;
 using Finance.Domain.Recurring;
+using Finance.Domain.Sync;
 using Finance.Domain.Transactions;
 using Finance.Domain.Users;
 using Microsoft.EntityFrameworkCore;
@@ -49,6 +50,8 @@ public sealed class AppDbContext(
 
     public DbSet<ExchangeRate> ExchangeRates => Set<ExchangeRate>();
 
+    public DbSet<SyncChangeLog> SyncChangeLogs => Set<SyncChangeLog>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresExtension("pg_trgm");
@@ -90,7 +93,7 @@ public sealed class AppDbContext(
             }
         }
 
-        var owned = ChangeTracker.Entries<UserOwnedEntity>()
+        var owned = ChangeTracker.Entries<IVersioned>()
             .Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted)
             .ToList();
         if (owned.Count == 0)
@@ -106,7 +109,7 @@ public sealed class AppDbContext(
                     $"{entry.Metadata.ClrType.Name} must be soft-deleted (MarkDeleted), not removed.");
             }
 
-            if (currentUser.UserId is { } userId && entry.Entity.UserId != userId)
+            if (currentUser.UserId is { } userId && entry.Entity.VersionOwnerId != userId)
             {
                 throw new InvalidOperationException("Attempt to write an entity that belongs to another user.");
             }
@@ -117,7 +120,7 @@ public sealed class AppDbContext(
             : null;
         try
         {
-            foreach (var userId in owned.Select(e => e.Entity.UserId).Distinct().Order())
+            foreach (var userId in owned.Select(e => e.Entity.VersionOwnerId).Distinct().Order())
             {
                 await LockUserAsync(userId, cancellationToken);
             }

@@ -1,5 +1,6 @@
 using Finance.Infrastructure.ExchangeRates;
 using Finance.Infrastructure.Recurring;
+using Finance.Infrastructure.Sync;
 using Hangfire;
 using Hangfire.Dashboard;
 using Hangfire.PostgreSql;
@@ -16,6 +17,8 @@ public static class JobsSetup
 {
     public const string ExchangeRatesJobId = "exchange-rates";
     public const string RecurringTransactionsJobId = "recurring-transactions";
+
+    public const string SyncLogCleanupJobId = "sync-log-cleanup";
 
     /// <summary>Hourly, because "today" differs between users' time zones.</summary>
     public const string RecurringTransactionsCron = "5 * * * *";
@@ -71,6 +74,10 @@ internal sealed class JobsBootstrapper(
             job => job.RunAsync(CancellationToken.None),
             JobsSetup.RecurringTransactionsCron);
         jobs.Enqueue<RecurringTransactionsJob>(job => job.RunAsync(CancellationToken.None));
+        recurringJobs.AddOrUpdate<SyncLogCleanupJob>(
+            JobsSetup.SyncLogCleanupJobId,
+            job => job.RunAsync(CancellationToken.None),
+            "30 3 * * *");
 
         await using var scope = scopes.CreateAsyncScope();
         if (!await scope.ServiceProvider.GetRequiredService<ExchangeRatesJob>().HasRatesForTodayAsync(cancellationToken))
