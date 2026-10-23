@@ -1,0 +1,22 @@
+targets:
+  $default:
+    builders:
+      # drift's direct part builder, so the generated row classes are visible to the other generators.
+      drift_dev:
+        enabled: false
+      drift_dev:analyzer:
+        enabled: true
+        options: &drift_options
+          store_date_time_values_as_text: true
+      drift_dev:not_shared:
+        enabled: true
+        options: *drift_options
+      json_serializable:
+        options:
+          explicit_to_json: true
+
+global_options:
+  drift_dev:not_shared:
+    runs_before:
+      - riverpod_generator:riverpod_generator
+      - freezed:freezed

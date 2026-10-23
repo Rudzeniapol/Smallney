@@ -1,0 +1,329 @@
+{
+  "@@locale": "ru",
+  "appTitle": "Smallney",
+  "save": "Сохранить",
+  "cancel": "Отмена",
+  "delete": "Удалить",
+  "done": "Готово",
+  "next": "Дальше",
+  "back": "Назад",
+  "close": "Закрыть",
+  "retry": "Повторить",
+  "today": "Сегодня",
+  "yesterday": "Вчера",
+  "tabHome": "Главная",
+  "tabTransactions": "Операции",
+  "tabBudget": "Бюджет",
+  "tabAnalytics": "Аналитика",
+  "addTransaction": "Добавить операцию",
+  "welcomeTitle": "Деньги под контролем — даже без сети",
+  "welcomeSubtitle": "Счета, бюджет и прогноз в одном месте. Всё работает офлайн и синхронизируется само.",
+  "email": "Email",
+  "emailHint": "you@example.com",
+  "password": "Пароль",
+  "passwordHint": "Не меньше 8 символов",
+  "createAccount": "Создать аккаунт",
+  "signIn": "Войти",
+  "haveAccount": "Уже есть аккаунт? Войти",
+  "noAccount": "Нет аккаунта? Создать",
+  "server": "Сервер",
+  "serverHint": "Адрес API, например https://finance.example.com",
+  "invalidEmail": "Введите email",
+  "shortPassword": "Не меньше 8 символов",
+  "wrongCredentials": "Неверный email или пароль",
+  "emailTaken": "Этот email уже зарегистрирован",
+  "networkError": "Нет связи с сервером",
+  "somethingWrong": "Что-то пошло не так: {message}",
+  "@somethingWrong": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "setupTitle": "Настроим под вас",
+  "setupSubtitle": "Итоги и бюджет считаются в базовой валюте.",
+  "monthStarts": "Финансовый месяц начинается",
+  "calendarMonth": "Обычный календарный месяц",
+  "monthFromDay": "Месяц будет считаться с {day}-го по {prev}-е — удобно привязать к дню зарплаты",
+  "@monthFromDay": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      },
+      "prev": {
+        "type": "int"
+      }
+    }
+  },
+  "firstAccountTitle": "Первый счёт",
+  "firstAccountSubtitle": "Остальные можно добавить позже.",
+  "accountName": "Название",
+  "currentBalance": "Текущий остаток, {currency}",
+  "@currentBalance": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "finish": "Начать",
+  "stepOf": "Шаг {step} из {total}",
+  "@stepOf": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "defaultAccountName": "Зарплатная карта",
+  "accountTypeCash": "Наличные",
+  "accountTypeDebitCard": "Дебетовая карта",
+  "accountTypeCreditCard": "Кредитная карта",
+  "accountTypeSavings": "Накопительный",
+  "accountTypeDeposit": "Вклад",
+  "accountTypeInvestment": "Инвестиции",
+  "financialMonth": "Финансовый месяц",
+  "totalCapital": "Общий капитал",
+  "accounts": "Счета",
+  "allCount": "Все {count}",
+  "@allCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "addAccount": "Добавить счёт",
+  "recentTransactions": "Последние операции",
+  "noTransactionsYet": "Операций пока нет",
+  "noTransactionsHint": "Нажмите «+», чтобы добавить первую",
+  "justNow": "только что",
+  "minutesAgo": "{n} мин назад",
+  "@minutesAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgo": "{n} ч назад",
+  "@hoursAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "daysAgo": "{n} дн назад",
+  "@daysAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "notSyncedYet": "ещё не синхронизировано",
+  "offline": "офлайн",
+  "syncing": "синхронизация…",
+  "settings": "Настройки",
+  "approximately": "≈ {amount}",
+  "@approximately": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "noRateFor": "нет курса для {currency}",
+  "@noRateFor": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "searchHint": "Поиск по заметке и тегам",
+  "filters": "Фильтры",
+  "incomeTotal": "Доходы · {period}",
+  "@incomeTotal": {
+    "placeholders": {
+      "period": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseTotal": "Расходы · {period}",
+  "@expenseTotal": {
+    "placeholders": {
+      "period": {
+        "type": "String"
+      }
+    }
+  },
+  "allAccounts": "Все счета",
+  "allTime": "Всё время",
+  "expenses": "Расходы",
+  "incomes": "Доходы",
+  "transfers": "Переводы",
+  "duplicate": "Повторить",
+  "transactionDeleted": "Операция удалена",
+  "transactionDuplicated": "Операция повторена сегодня",
+  "planned": "Запланировано · подтвердите",
+  "nothingFound": "Ничего не найдено",
+  "transfer": "Перевод",
+  "expense": "Расход",
+  "income": "Доход",
+  "recentFirst": "Недавние первыми",
+  "allCategories": "Все",
+  "categories": "Категории",
+  "note": "Заметка",
+  "noteHint": "Например, «Евроопт»",
+  "from": "Откуда",
+  "to": "Куда",
+  "creditedAmount": "Зачислится, {currency}",
+  "@creditedAmount": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "byTodayRate": "По курсу НБРБ на сегодня ≈ {amount}",
+  "@byTodayRate": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "saveWithAmount": "Сохранить · {amount}",
+  "@saveWithAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "savedOffline": "Сохранено · отправится при синхронизации",
+  "chooseAccount": "Выберите счёт",
+  "noAccountsYet": "Сначала добавьте счёт",
+  "editTransaction": "Операция",
+  "deleteTransactionConfirm": "Удалить эту операцию?",
+  "tags": "Теги",
+  "tagsHint": "через запятую",
+  "date": "Дата",
+  "sameAccount": "Выберите другой счёт",
+  "accountsTitle": "Счета",
+  "newAccount": "Новый счёт",
+  "editAccount": "Счёт",
+  "accountType": "Тип",
+  "currency": "Валюта",
+  "initialBalance": "Начальный остаток",
+  "includeInTotals": "Учитывать в общем капитале",
+  "archived": "В архиве",
+  "showArchived": "Показать архив",
+  "creditLimit": "Кредитный лимит",
+  "interestRate": "Ставка, % годовых",
+  "capitalization": "Капитализация",
+  "capNone": "Без капитализации",
+  "capMonthly": "Ежемесячно",
+  "capQuarterly": "Ежеквартально",
+  "capAtEnd": "В конце срока",
+  "openDate": "Дата открытия",
+  "maturityDate": "Дата окончания",
+  "notSet": "не задана",
+  "archive": "В архив",
+  "unarchive": "Вернуть из архива",
+  "deleteAccount": "Удалить счёт",
+  "deleteAccountConfirm": "Удалить счёт «{name}»?",
+  "@deleteAccountConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "accountHasTransactions": "У счёта есть операции — его можно только убрать в архив",
+  "nameRequired": "Введите название",
+  "invalidAmount": "Неверная сумма",
+  "creditLimitShort": "лимит {amount}",
+  "@creditLimitShort": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "interestShort": "{rate}%",
+  "@interestShort": {
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      }
+    }
+  },
+  "noAccountsTitle": "Счетов пока нет",
+  "settingsTitle": "Настройки",
+  "sync": "Синхронизация",
+  "syncNow": "Синхронизировать",
+  "lastSync": "Последняя синхронизация: {time}",
+  "@lastSync": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "neverSynced": "Ещё не синхронизировалось",
+  "pendingChanges": "{count, plural, one{{count} изменение ждёт отправки} few{{count} изменения ждут отправки} other{{count} изменений ждут отправки}}",
+  "@pendingChanges": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "allSynced": "Всё синхронизировано",
+  "failedChanges": "Сервер не принял изменения",
+  "discardChange": "Отменить изменение",
+  "theme": "Тема",
+  "themeSystem": "Системная",
+  "themeLight": "Светлая",
+  "themeDark": "Тёмная",
+  "language": "Язык",
+  "logout": "Выйти",
+  "logoutConfirm": "Выйти из аккаунта? Данные на этом устройстве будут удалены, на сервере всё сохранится.",
+  "baseCurrency": "Базовая валюта",
+  "firstDayOfMonth": "Начало месяца",
+  "dayN": "{day}-е число",
+  "@dayN": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "comingSoonTitle": "Скоро здесь",
+  "comingSoonBudget": "Бюджет месяца появится в следующем обновлении.",
+  "comingSoonAnalytics": "Аналитика появится в одном из следующих обновлений.",
+  "dayToday": "Сегодня, {date}",
+  "@dayToday": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dayYesterday": "Вчера, {date}",
+  "@dayYesterday": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  }
+}

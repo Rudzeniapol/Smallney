@@ -181,6 +181,14 @@ public class RecurringRuleTests
     }
 
     [Fact]
+    public void Occurrence_id_matches_the_shared_test_vector()
+    {
+        // The same vector is asserted by the Flutter client (mobile/test/core/ids_test.dart).
+        RecurringRule.OccurrenceTransactionId(Guid.Parse("0190a5d2-ac96-774b-bcce-b302099a8057"), new DateOnly(2026, 10, 22))
+            .Should().Be(Guid.Parse("01a160e8-5000-782c-bb47-103347a1eb6b"));
+    }
+
+    [Fact]
     public void Deterministic_uuid_encodes_the_date_as_timestamp()
     {
         // 1970-01-02T00:00:00Z = 86 400 000 ms = 0x0000_0526_5C00 in the first 48 bits.

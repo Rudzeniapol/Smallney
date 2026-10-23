@@ -1,0 +1,5 @@
+tags:
+  e2e:
+    # Needs a running backend: SMALLNEY_E2E_URL=http://localhost:5080 flutter test test/e2e
+  screenshots:
+    # Renders screens to PNG: SMALLNEY_SCREENSHOTS=1 flutter test --tags screenshots --update-goldens

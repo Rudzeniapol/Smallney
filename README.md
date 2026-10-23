@@ -3,8 +3,16 @@
 Учёт личных финансов: backend на .NET 10 + PostgreSQL 17 и мобильный клиент на Flutter (offline-first).
 Встроенного ИИ нет: категоризация, бюджеты и прогнозы считаются по правилам и формулам.
 
-> Статус: **фаза 4 из 9** — бэкенд готов: auth, деньги и курсы НБРБ, счета, категории, транзакции,
-> регулярные платежи, бюджеты, цели, прогноз, аналитика и offline-first синхронизация.
+> Статус: **фаза 5 из 9** — бэкенд готов (auth, курсы НБРБ, счета, операции, регулярные платежи, бюджеты, цели,
+> прогноз, аналитика, синхронизация); мобильное приложение: вход и онбординг, локальная БД, синхронизация,
+> счета, операции, быстрое добавление.
+
+<p>
+  <img src="docs/screenshots/home_dark.png" width="200" alt="Главная">
+  <img src="docs/screenshots/quick_add_dark.png" width="200" alt="Быстрое добавление">
+  <img src="docs/screenshots/transactions_dark.png" width="200" alt="Операции">
+  <img src="docs/screenshots/home_light.png" width="200" alt="Главная, светлая тема">
+</p>
 > План фаз и принятые решения: [`docs/decisions.md`](docs/decisions.md). Дизайн мобильного приложения: [`design/`](design/DESIGN.md).
 
 ## Структура
@@ -17,6 +25,7 @@ backend/
   src/Finance.Api             Minimal API, ProblemDetails, OpenAPI/Scalar, Serilog
   tests/Finance.Tests.Unit         xUnit
   tests/Finance.Tests.Integration  xUnit + Testcontainers (PostgreSQL 17)
+mobile/                       Flutter-клиент (Riverpod, go_router, drift, dio, freezed)
 deploy/                       docker-compose для VPS (Caddy + API + PostgreSQL + бэкапы)
 design/                       макеты и спецификация UI
 docs/decisions.md             решения по неоднозначным местам ТЗ
@@ -149,6 +158,39 @@ cd Smallney && git pull && cd deploy && docker compose up -d --build
 ```bash
 gunzip -c backups/last/smallney-latest.sql.gz | docker compose exec -T postgres psql -U smallney -d smallney
 ```
+
+## Мобильное приложение (`mobile/`)
+
+Нужен Flutter 3.47+ (stable). Для Android — Android SDK с принятыми лицензиями (`flutter doctor --android-licenses`).
+
+```bash
+cd mobile
+flutter pub get
+flutter run --dart-define=API_BASE_URL=http://10.0.2.2:5080     # эмулятор Android, бэкенд из docker compose
+flutter run --dart-define=API_BASE_URL=https://finance.example.com  # ваш VPS
+flutter build apk --release --dart-define=API_BASE_URL=https://finance.example.com
+```
+
+Адрес сервера можно поменять и в самом приложении: ссылка «Сервер» внизу экрана входа.
+Для запуска на Linux desktop нужен `libsecret-devel` (`sudo dnf install libsecret-devel`).
+
+Сгенерированный код (`*.g.dart`, `*.freezed.dart`, `*.drift.dart`, локализация) закоммичен. После изменения моделей,
+таблиц или провайдеров:
+
+```bash
+dart run build_runner build
+flutter gen-l10n
+```
+
+Тесты:
+
+```bash
+flutter test                                                   # unit + widget (in-memory drift)
+SMALLNEY_E2E_URL=http://localhost:5080 flutter test test/e2e   # клиент против работающего бэкенда
+SMALLNEY_SCREENSHOTS=1 flutter test --tags screenshots --update-goldens   # рендер экранов в test/screenshots/png
+```
+
+Как устроена синхронизация на клиенте — [`docs/sync.md`](docs/sync.md) и `docs/decisions.md` (D65–D68).
 
 ## Клиент из OpenAPI
 
